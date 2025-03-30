@@ -1,85 +1,87 @@
 import tkinter as tk
-from tkinter import simpledialog
-from tkinter import messagebox
+from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
-import pyautogui, time
+import pyautogui, threading, random, time
 
-# 🧠 Multi-line input popup
-class MultiLineInput(tk.Toplevel):
-    def __init__(self, parent, title="Paste what should be typed:"):
-        super().__init__(parent)
-        self.title(title)
-        self.geometry("400x300")
-        self.result = None
-
-        self.text_widget = tk.Text(self, wrap=tk.WORD)
-        self.text_widget.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
-
-        button_frame = tk.Frame(self)
-        button_frame.pack(pady=5)
-
-        ok_btn = tk.Button(button_frame, text="OK", width=10, command=self.on_ok)
-        ok_btn.pack(side=tk.LEFT, padx=5)
-
-        cancel_btn = tk.Button(button_frame, text="Cancel", width=10, command=self.destroy)
-        cancel_btn.pack(side=tk.LEFT, padx=5)
-
-        self.text_widget.focus_set()
-        self.transient(parent)
-        self.grab_set()
-        self.wait_window()
-
-    def on_ok(self):
-        self.result = self.text_widget.get("1.0", tk.END).strip()
-        self.destroy()
-
-
-# 🕶️ Draggable floating eye window
-class DraggableWindow(tk.Tk):
+class TypingBot(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.overrideredirect(True)  # No border or title bar
-        self.attributes('-topmost', True)  # Always on top
+        self.title("Eyetype4You Bot")
+        self.geometry("500x600")
+        self.configure(bg="#2B2B2B")
 
-        # Load eye image
-        eye_img = Image.open("assets/eyes.png").resize((100, 100))
-        self.eye_photo = ImageTk.PhotoImage(eye_img)
-        eye_label = tk.Label(self, image=self.eye_photo)
-        eye_label.pack()
+        # Transparent bot image
+        bot_img = Image.open("assets/eyes.png").resize((150, 150))
+        self.bot_photo = ImageTk.PhotoImage(bot_img)
+        tk.Label(self, image=self.bot_photo, bg="#2B2B2B").pack(pady=10)
 
-        # Drag controls
-        eye_label.bind('<ButtonPress-1>', self.start_move)
-        eye_label.bind('<B1-Motion>', self.do_move)
-        eye_label.bind('<Button-3>', self.show_menu)  # Right-click
+        # Main menu buttons
+        menu_frame = tk.Frame(self, bg="#2B2B2B")
+        menu_frame.pack(pady=5)
 
-        # Right-click menu
-        self.popup_menu = tk.Menu(self, tearoff=0)
-        self.popup_menu.add_command(label="Paste & Type", command=self.paste_and_type)
-        self.popup_menu.add_separator()
-        self.popup_menu.add_command(label="Exit", command=self.destroy)
+        self.start_btn = tk.Button(menu_frame, text="▶️ Start Typing", width=20, command=self.start_typing)
+        self.start_btn.pack(side=tk.LEFT, padx=5)
 
-    def start_move(self, event):
-        self.x = event.x
-        self.y = event.y
+        self.close_btn = tk.Button(menu_frame, text="❌ Close", width=10, command=self.destroy)
+        self.close_btn.pack(side=tk.LEFT, padx=5)
 
-    def do_move(self, event):
-        self.geometry(f'+{event.x_root - self.x}+{event.y_root - self.y}')
+        # Typing text box
+        self.text_widget = tk.Text(self, wrap=tk.WORD, font=("Courier", 12))
+        self.text_widget.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-    def show_menu(self, event):
-        self.popup_menu.tk_popup(event.x_root, event.y_root)
+        # Progress Bar
+        self.progress = ttk.Progressbar(self, orient="horizontal", mode="determinate")
+        self.progress.pack(fill=tk.X, padx=10, pady=5)
 
-    def paste_and_type(self):
-        text = MultiLineInput(self).result
-        if text:
-            wpm = simpledialog.askinteger("Speed", "Words per minute (WPM):", minvalue=10, maxvalue=300, initialvalue=60)
-            if wpm:
-                delay = 60 / (wpm * 5)
-                messagebox.showinfo("Ready", "Click into the target window within 3 seconds.")
-                self.withdraw()
-                time.sleep(3)
-                pyautogui.write(text, interval=delay)
-                self.deiconify()
+        # Typing speed slider
+        slider_frame = tk.Frame(self, bg="#2B2B2B")
+        slider_frame.pack(pady=5)
+        tk.Label(slider_frame, text="Typing Speed (WPM):", fg="white", bg="#2B2B2B").pack(side=tk.LEFT, padx=5)
+        self.wpm_slider = tk.Scale(slider_frame, from_=10, to=369, orient="horizontal", bg="#2B2B2B", fg="white", highlightthickness=0)
+        self.wpm_slider.set(120)
+        self.wpm_slider.pack(side=tk.LEFT)
+
+    def start_typing(self):
+        text = self.text_widget.get("1.0", tk.END).strip()
+        if not text:
+            messagebox.showwarning("Warning", "You need to enter some text first!")
+            return
+
+        wpm = self.wpm_slider.get()
+        delay = 60 / (wpm * 5)
+
+        messagebox.showinfo("Ready", "Click into the target window within 5 seconds.")
+        time.sleep(5)
+
+        typing_thread = threading.Thread(target=self.simulate_typing, args=(text, delay))
+        typing_thread.start()
+
+    def simulate_typing(self, text, delay):
+        total_chars = len(text)
+        chars_typed = 0
+
+        for char in text:
+            if ord(char) > 126:
+                char = '-' if char == '—' else ' '
+
+            if random.random() < 0.03 and char.isalpha():
+                typo_char = random.choice('abcdefghijklmnopqrstuvwxyz')
+                pyautogui.write(typo_char, interval=delay / 2)
+                pyautogui.press('backspace')
+
+            pyautogui.write(char, interval=delay / 2)
+            chars_typed += 1
+
+            self.update_progress(chars_typed, total_chars)
+
+        self.progress['value'] = 0
+        messagebox.showinfo("Done", "Typing complete!")
+
+    def update_progress(self, current, total):
+        percent = (current / total) * 100
+        self.progress['value'] = percent
+        self.update_idletasks()
 
 if __name__ == "__main__":
-    app = DraggableWindow()
+    app = TypingBot()
     app.mainloop()
