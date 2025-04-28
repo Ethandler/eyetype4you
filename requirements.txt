@@ -1,2 +1,4 @@
-pyautogui
-pillow
+pyautogui==0.9.54
+pillow==10.2.0
+tk
+# If running on Linux, you may need to install python3-tk via your package manager
