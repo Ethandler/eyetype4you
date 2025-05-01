@@ -1,4 +1,7 @@
-pyautogui==0.9.54
-pillow==10.2.0
+# Updated requirements for eyetype4you
+pyautogui>=0.9.54
+pillow>=10.2.0
 tk
 # If running on Linux, you may need to install python3-tk via your package manager
+# To upgrade all packages, run: pip install --upgrade -r requirements.txt
+# For more details, see: https://pypi.org/project/pyautogui/ and https://pypi.org/project/Pillow/
