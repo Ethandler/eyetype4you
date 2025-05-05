@@ -1,0 +1,21 @@
+name: Build Linux Binary
+on: [ push ]
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with: python-version: '3.13.3'
+      - name: Install dependencies
+        run: pip install --upgrade pip pyinstaller
+      - name: Build ELF
+        run: pyinstaller --onefile main.py
+      - name: Tar binary
+        run: tar czf eyetype4you_linux.tar.gz dist/main
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: eyetype4you_linux
+          path: eyetype4you_linux.tar.gz
