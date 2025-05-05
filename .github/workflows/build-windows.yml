@@ -1,0 +1,25 @@
+name: Build Windows Installer
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install pyinstaller
+      - name: Build .exe
+        run: pyinstaller --onefile --name Eyetype4You main.py
+      - name: Zip artifact
+        run: powershell Compress-Archive -Path dist\Eyetype4You.exe -DestinationPath Eyetype4You-windows.zip
+      - uses: actions/upload-artifact@v3
+        with:
+          name: windows
+          path: Eyetype4You-windows.zip
