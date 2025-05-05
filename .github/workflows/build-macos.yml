@@ -16,7 +16,7 @@ jobs:
       - name: Zip .app
         run: zip -r eyetype4you_macos.zip dist/Eyetype4You.app
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: eyetype4you_macos
           path: eyetype4you_macos.zip
