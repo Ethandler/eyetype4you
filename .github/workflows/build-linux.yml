@@ -1,0 +1,22 @@
+name: Build Linux Binary
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install PyInstaller
+        run: pip3 install pyinstaller
+      - name: Build ELF
+        run: pyinstaller --onefile --name eyetype4you main.py
+      - name: Tar artifact
+        run: |
+          tar czf Eyetype4You-linux.tar.gz dist/eyetype4you
+      - uses: actions/upload-artifact@v3
+        with:
+          name: linux
+          path: Eyetype4You-linux.tar.gz
