@@ -201,8 +201,45 @@ class TypingBot(tk.Tk):
     def simulate_typing(self, text: str, delay: float) -> None:
         total = len(text)
         i = 0
+        current_line_indent = ''
         while i < total:
             ch = text[i]
+            # autotab logic
+            if ch == '\n':
+                prev_newline = text.rfind('\n', 0, i)
+                if prev_newline == -1:
+                    prev_line = text[:i]
+                else:
+                    prev_line = text[prev_newline+1:i]
+                leading_ws = ''
+                for c in prev_line:
+                    if c in (' ', '\t'):
+                        leading_ws += c
+                    else:
+                        break
+                current_line_indent = leading_ws
+                if prev_line.rstrip().endswith(':'):
+                    current_line_indent += '    '
+                pyautogui.typewrite('\n')
+                time.sleep(delay)
+                # Check if indentation already exists at cursor
+                if current_line_indent:
+                    # Copy a few chars at cursor to clipboard
+                    pyautogui.hotkey('shift', 'end')
+                    pyautogui.hotkey('ctrl', 'c')
+                    typed = pyperclip.paste()
+                    # Only type missing part of indent
+                    missing = current_line_indent
+                    if typed.startswith(current_line_indent):
+                        missing = ''
+                    elif typed and current_line_indent.startswith(typed):
+                        missing = current_line_indent[len(typed):]
+                    if missing:
+                        pyautogui.typewrite(missing)
+                        time.sleep(delay * len(missing))
+                i += 1
+                self.update_progress_circle((i / total) * 100)
+                continue
             # typo?
             if ch.isalnum() and random.random() < self.error_rate:
                 if (nb := keyboard_neighbors.get(ch, [])):
