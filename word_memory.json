@@ -1,1 +1,3208 @@
-{}
+{
+  "Best": {
+    "encounters": 3,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.95,
+    "last_seen": 1747214816.6204743,
+    "first_seen": 1747214734.254181
+  },
+  "regards": {
+    "encounters": 3,
+    "difficulty": 0.23333333333333336,
+    "confidence": 0.95,
+    "last_seen": 1747214816.6204789,
+    "first_seen": 1747214734.2542205
+  },
+  "Eyetype4YouThank": {
+    "encounters": 2,
+    "difficulty": 0.5333333333333333,
+    "confidence": 0.5666666666666667,
+    "last_seen": 1747214763.3618035,
+    "first_seen": 1747214734.2543023
+  },
+  "you": {
+    "encounters": 12,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747214734.2543242,
+    "first_seen": 1747214734.2543244
+  },
+  "for": {
+    "encounters": 8,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747214734.2543387,
+    "first_seen": 1747214734.254339
+  },
+  "your": {
+    "encounters": 4,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747214734.2543542,
+    "first_seen": 1747214734.2543545
+  },
+  "message": {
+    "encounters": 3,
+    "difficulty": 0.4666666666666667,
+    "confidence": 0.7333333333333333,
+    "last_seen": 1747214816.6205323,
+    "first_seen": 1747214734.2543726
+  },
+  "I'll": {
+    "encounters": 3,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.95,
+    "last_seen": 1747214816.6205337,
+    "first_seen": 1747214734.2543862
+  },
+  "get": {
+    "encounters": 4,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747214734.2543983,
+    "first_seen": 1747214734.2543988
+  },
+  "back": {
+    "encounters": 4,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.7333333333333334,
+    "last_seen": 1747214734.254412,
+    "first_seen": 1747214734.2544122
+  },
+  "to": {
+    "encounters": 6,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747214734.2544248,
+    "first_seen": 1747214734.2544253
+  },
+  "as": {
+    "encounters": 9,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747214734.2544448,
+    "first_seen": 1747214734.254445
+  },
+  "soon": {
+    "encounters": 3,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.95,
+    "last_seen": 1747214816.6205378,
+    "first_seen": 1747214734.2544572
+  },
+  "possible.Hello": {
+    "encounters": 2,
+    "difficulty": 0.8666666666666667,
+    "confidence": 0.30000000000000004,
+    "last_seen": 1747214763.3618894,
+    "first_seen": 1747214734.2544844
+  },
+  "How": {
+    "encounters": 3,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747214734.254499,
+    "first_seen": 1747214734.2544994
+  },
+  "can": {
+    "encounters": 4,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747214734.2545116,
+    "first_seen": 1747214734.2545118
+  },
+  "help": {
+    "encounters": 4,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747214734.254563,
+    "first_seen": 1747214734.2545633
+  },
+  "today": {
+    "encounters": 3,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.95,
+    "last_seen": 1747214816.6205807,
+    "first_seen": 1747214734.2546017
+  },
+  "Eyetype4You": {
+    "encounters": 1,
+    "difficulty": 0.3666666666666667,
+    "confidence": 0.6333333333333333,
+    "last_seen": 1747214816.6205156,
+    "first_seen": 1747214816.6205158
+  },
+  "Thank": {
+    "encounters": 1,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7,
+    "last_seen": 1747214816.6205263,
+    "first_seen": 1747214816.6205266
+  },
+  "possible": {
+    "encounters": 1,
+    "difficulty": 0.6333333333333333,
+    "confidence": 0.3666666666666667,
+    "last_seen": 1747214816.620543,
+    "first_seen": 1747214816.620543
+  },
+  "Hello": {
+    "encounters": 1,
+    "difficulty": 0.2666666666666667,
+    "confidence": 0.7333333333333333,
+    "last_seen": 1747214816.6205468,
+    "first_seen": 1747214816.6205468
+  },
+  "Title": {
+    "encounters": 2,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.9333333333333332,
+    "last_seen": 1747215223.1864004,
+    "first_seen": 1747215113.4230673
+  },
+  "The": {
+    "encounters": 6,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215113.424392,
+    "first_seen": 1747215113.4243927
+  },
+  "Cacophony": {
+    "encounters": 2,
+    "difficulty": 0.43333333333333335,
+    "confidence": 0.6666666666666666,
+    "last_seen": 1747215223.1864657,
+    "first_seen": 1747215113.424426
+  },
+  "Beneath": {
+    "encounters": 4,
+    "difficulty": 0.3666666666666667,
+    "confidence": 0.9333333333333332,
+    "last_seen": 1747215223.1869442,
+    "first_seen": 1747215113.4244447
+  },
+  "Cragwhistle": {
+    "encounters": 6,
+    "difficulty": 0.5,
+    "confidence": 0.95,
+    "last_seen": 1747215223.1869464,
+    "first_seen": 1747215113.4244618
+  },
+  "Keep": {
+    "encounters": 2,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215113.4244766,
+    "first_seen": 1747215113.4244769
+  },
+  "In": {
+    "encounters": 2,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215113.4244888,
+    "first_seen": 1747215113.4244888
+  },
+  "the": {
+    "encounters": 25,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215113.4245007,
+    "first_seen": 1747215113.424501
+  },
+  "village": {
+    "encounters": 2,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215223.1864843,
+    "first_seen": 1747215113.4245143
+  },
+  "of": {
+    "encounters": 9,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215113.424524,
+    "first_seen": 1747215113.4245243
+  },
+  "nestled": {
+    "encounters": 2,
+    "difficulty": 0.23333333333333336,
+    "confidence": 0.8666666666666666,
+    "last_seen": 1747215223.1864908,
+    "first_seen": 1747215113.424578
+  },
+  "beneath": {
+    "encounters": 4,
+    "difficulty": 0.3666666666666667,
+    "confidence": 0.9333333333333332,
+    "last_seen": 1747215223.1867847,
+    "first_seen": 1747215113.424591
+  },
+  "jagged": {
+    "encounters": 2,
+    "difficulty": 0.43333333333333335,
+    "confidence": 0.6666666666666666,
+    "last_seen": 1747215223.1864967,
+    "first_seen": 1747215113.4246075
+  },
+  "bluff": {
+    "encounters": 2,
+    "difficulty": 0.4,
+    "confidence": 0.7,
+    "last_seen": 1747215223.186499,
+    "first_seen": 1747215113.4246194
+  },
+  "igneous": {
+    "encounters": 2,
+    "difficulty": 0.3666666666666667,
+    "confidence": 0.7333333333333333,
+    "last_seen": 1747215223.1865022,
+    "first_seen": 1747215113.4246364
+  },
+  "rock": {
+    "encounters": 2,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.8333333333333334,
+    "last_seen": 1747215223.1865041,
+    "first_seen": 1747215113.424648
+  },
+  "and": {
+    "encounters": 15,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215113.4246585,
+    "first_seen": 1747215113.4246588
+  },
+  "cloaked": {
+    "encounters": 2,
+    "difficulty": 0.23333333333333336,
+    "confidence": 0.8666666666666666,
+    "last_seen": 1747215223.1865072,
+    "first_seen": 1747215113.4246702
+  },
+  "in": {
+    "encounters": 9,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215113.4246802,
+    "first_seen": 1747215113.4246805
+  },
+  "perpetual": {
+    "encounters": 2,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7999999999999999,
+    "last_seen": 1747215223.1865108,
+    "first_seen": 1747215113.424695
+  },
+  "mist": {
+    "encounters": 2,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.95,
+    "last_seen": 1747215223.1865134,
+    "first_seen": 1747215113.424708
+  },
+  "there": {
+    "encounters": 3,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7,
+    "last_seen": 1747215113.4247324,
+    "first_seen": 1747215113.4247327
+  },
+  "existed": {
+    "encounters": 2,
+    "difficulty": 0.23333333333333336,
+    "confidence": 0.8666666666666666,
+    "last_seen": 1747215223.1865175,
+    "first_seen": 1747215113.4247465
+  },
+  "keep": {
+    "encounters": 5,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215113.42476,
+    "first_seen": 1747215113.4247603
+  },
+  "long": {
+    "encounters": 3,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.95,
+    "last_seen": 1747215952.8308816,
+    "first_seen": 1747215113.424772
+  },
+  "rumored": {
+    "encounters": 2,
+    "difficulty": 0.23333333333333336,
+    "confidence": 0.8666666666666666,
+    "last_seen": 1747215223.1865244,
+    "first_seen": 1747215113.4247842
+  },
+  "be": {
+    "encounters": 3,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215113.4248025,
+    "first_seen": 1747215113.4248028
+  },
+  "uninhabitable": {
+    "encounters": 2,
+    "difficulty": 0.5333333333333333,
+    "confidence": 0.5666666666666667,
+    "last_seen": 1747215223.1865296,
+    "first_seen": 1747215113.424821
+  },
+  "Its": {
+    "encounters": 2,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215113.4248612,
+    "first_seen": 1747215113.4248614
+  },
+  "gargantuan": {
+    "encounters": 2,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215223.1865335,
+    "first_seen": 1747215113.424885
+  },
+  "turrets": {
+    "encounters": 2,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215223.1865354,
+    "first_seen": 1747215113.424898
+  },
+  "tilted": {
+    "encounters": 2,
+    "difficulty": 0.2,
+    "confidence": 0.9,
+    "last_seen": 1747215223.186538,
+    "first_seen": 1747215113.4249098
+  },
+  "ominously": {
+    "encounters": 2,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7999999999999999,
+    "last_seen": 1747215223.1865401,
+    "first_seen": 1747215113.4249227
+  },
+  "toward": {
+    "encounters": 2,
+    "difficulty": 0.2,
+    "confidence": 0.9,
+    "last_seen": 1747215223.1865423,
+    "first_seen": 1747215113.4249349
+  },
+  "sky": {
+    "encounters": 2,
+    "difficulty": 0.1,
+    "confidence": 0.95,
+    "last_seen": 1747215223.1865451,
+    "first_seen": 1747215113.4249494
+  },
+  "like": {
+    "encounters": 9,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215113.4249628,
+    "first_seen": 1747215113.4249628
+  },
+  "crooked": {
+    "encounters": 2,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215223.1865487,
+    "first_seen": 1747215113.4249752
+  },
+  "fingers": {
+    "encounters": 2,
+    "difficulty": 0.23333333333333336,
+    "confidence": 0.8666666666666666,
+    "last_seen": 1747215223.1865513,
+    "first_seen": 1747215113.4249883
+  },
+  "while": {
+    "encounters": 3,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7,
+    "last_seen": 1747215113.4250004,
+    "first_seen": 1747215113.4250007
+  },
+  "weatherworn": {
+    "encounters": 2,
+    "difficulty": 0.5,
+    "confidence": 0.6,
+    "last_seen": 1747215223.186555,
+    "first_seen": 1747215113.425016
+  },
+  "gargoyles": {
+    "encounters": 2,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7999999999999999,
+    "last_seen": 1747215223.1865573,
+    "first_seen": 1747215113.4250305
+  },
+  "leered": {
+    "encounters": 2,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7999999999999999,
+    "last_seen": 1747215223.1865594,
+    "first_seen": 1747215113.4250426
+  },
+  "at": {
+    "encounters": 3,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215113.425053,
+    "first_seen": 1747215113.4250531
+  },
+  "villagers": {
+    "encounters": 2,
+    "difficulty": 0.4,
+    "confidence": 0.7,
+    "last_seen": 1747215223.1865637,
+    "first_seen": 1747215113.4250698
+  },
+  "from": {
+    "encounters": 5,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215113.4250808,
+    "first_seen": 1747215113.425081
+  },
+  "shadow-dappled": {
+    "encounters": 2,
+    "difficulty": 0.7666666666666667,
+    "confidence": 0.33333333333333326,
+    "last_seen": 1747215223.1865678,
+    "first_seen": 1747215113.4250982
+  },
+  "ledges": {
+    "encounters": 2,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215223.18657,
+    "first_seen": 1747215113.425164
+  },
+  "Most": {
+    "encounters": 2,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215113.4251914,
+    "first_seen": 1747215113.4251916
+  },
+  "avoided": {
+    "encounters": 2,
+    "difficulty": 0.23333333333333336,
+    "confidence": 0.8666666666666666,
+    "last_seen": 1747215223.186573,
+    "first_seen": 1747215113.4252095
+  },
+  "it": {
+    "encounters": 3,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215113.4252238,
+    "first_seen": 1747215113.4252243
+  },
+  "entirely": {
+    "encounters": 2,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.8333333333333334,
+    "last_seen": 1747215223.1865768,
+    "first_seen": 1747215113.425241
+  },
+  "But": {
+    "encounters": 2,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215113.4252546,
+    "first_seen": 1747215113.4252548
+  },
+  "not": {
+    "encounters": 5,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215113.425268,
+    "first_seen": 1747215113.4252682
+  },
+  "Thaddeus": {
+    "encounters": 8,
+    "difficulty": 0.5,
+    "confidence": 0.95,
+    "last_seen": 1747215223.1869097,
+    "first_seen": 1747215113.425285
+  },
+  "Quill\u2014a": {
+    "encounters": 2,
+    "difficulty": 0.4666666666666667,
+    "confidence": 0.6333333333333333,
+    "last_seen": 1747215223.1866024,
+    "first_seen": 1747215113.4261134
+  },
+  "persnickety": {
+    "encounters": 2,
+    "difficulty": 0.5,
+    "confidence": 0.6,
+    "last_seen": 1747215223.186605,
+    "first_seen": 1747215113.4261417
+  },
+  "scholar": {
+    "encounters": 2,
+    "difficulty": 0.5,
+    "confidence": 0.6,
+    "last_seen": 1747215223.1866074,
+    "first_seen": 1747215113.4261603
+  },
+  "with": {
+    "encounters": 15,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.7333333333333334,
+    "last_seen": 1747215113.426177,
+    "first_seen": 1747215113.4261773
+  },
+  "peculiar": {
+    "encounters": 2,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.8333333333333334,
+    "last_seen": 1747215223.1866114,
+    "first_seen": 1747215113.4261978
+  },
+  "fondness": {
+    "encounters": 2,
+    "difficulty": 0.5,
+    "confidence": 0.6,
+    "last_seen": 1747215223.1866136,
+    "first_seen": 1747215113.4262333
+  },
+  "arcane": {
+    "encounters": 2,
+    "difficulty": 0.2,
+    "confidence": 0.9,
+    "last_seen": 1747215223.1866167,
+    "first_seen": 1747215113.4262545
+  },
+  "linguistics": {
+    "encounters": 2,
+    "difficulty": 0.3666666666666667,
+    "confidence": 0.7333333333333333,
+    "last_seen": 1747215223.1866188,
+    "first_seen": 1747215113.4262714
+  },
+  "phonetic": {
+    "encounters": 2,
+    "difficulty": 0.4,
+    "confidence": 0.7,
+    "last_seen": 1747215223.1866226,
+    "first_seen": 1747215113.4262915
+  },
+  "anomalies": {
+    "encounters": 2,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7999999999999999,
+    "last_seen": 1747215223.1866248,
+    "first_seen": 1747215113.4263082
+  },
+  "had": {
+    "encounters": 5,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215113.4263477,
+    "first_seen": 1747215113.4263482
+  },
+  "an": {
+    "encounters": 5,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215113.42636,
+    "first_seen": 1747215113.4263604
+  },
+  "obsession": {
+    "encounters": 2,
+    "difficulty": 0.5333333333333333,
+    "confidence": 0.5666666666666667,
+    "last_seen": 1747215223.186632,
+    "first_seen": 1747215113.4263754
+  },
+  "he": {
+    "encounters": 7,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215113.4263856,
+    "first_seen": 1747215113.4263859
+  },
+  "believed": {
+    "encounters": 2,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.8333333333333334,
+    "last_seen": 1747215223.1866353,
+    "first_seen": 1747215113.4263985
+  },
+  "concealed": {
+    "encounters": 2,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7999999999999999,
+    "last_seen": 1747215223.186639,
+    "first_seen": 1747215113.426418
+  },
+  "phonographium": {
+    "encounters": 4,
+    "difficulty": 0.5333333333333333,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215223.1868615,
+    "first_seen": 1747215113.4264379
+  },
+  "ancient": {
+    "encounters": 2,
+    "difficulty": 0.23333333333333336,
+    "confidence": 0.8666666666666666,
+    "last_seen": 1747215223.186645,
+    "first_seen": 1747215113.4264545
+  },
+  "artifact": {
+    "encounters": 2,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.8333333333333334,
+    "last_seen": 1747215223.1866467,
+    "first_seen": 1747215113.4264686
+  },
+  "that": {
+    "encounters": 3,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.7333333333333334,
+    "last_seen": 1747215113.4264817,
+    "first_seen": 1747215113.426482
+  },
+  "could": {
+    "encounters": 3,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215113.4264948,
+    "first_seen": 1747215113.4264948
+  },
+  "capture": {
+    "encounters": 2,
+    "difficulty": 0.3666666666666667,
+    "confidence": 0.7333333333333333,
+    "last_seen": 1747215223.1866515,
+    "first_seen": 1747215113.4265099
+  },
+  "voices": {
+    "encounters": 2,
+    "difficulty": 0.2,
+    "confidence": 0.9,
+    "last_seen": 1747215223.1866531,
+    "first_seen": 1747215113.426522
+  },
+  "stone": {
+    "encounters": 2,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.9333333333333332,
+    "last_seen": 1747215223.1866562,
+    "first_seen": 1747215113.426537
+  },
+  "using": {
+    "encounters": 2,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.9333333333333332,
+    "last_seen": 1747215223.1866584,
+    "first_seen": 1747215113.4265497
+  },
+  "turbulent": {
+    "encounters": 2,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7999999999999999,
+    "last_seen": 1747215223.1866605,
+    "first_seen": 1747215113.426565
+  },
+  "oscillations": {
+    "encounters": 2,
+    "difficulty": 0.6333333333333333,
+    "confidence": 0.4666666666666667,
+    "last_seen": 1747215223.1866627,
+    "first_seen": 1747215113.4267304
+  },
+  "Equipped": {
+    "encounters": 2,
+    "difficulty": 0.6333333333333333,
+    "confidence": 0.4666666666666667,
+    "last_seen": 1747215223.1866648,
+    "first_seen": 1747215113.4267626
+  },
+  "his": {
+    "encounters": 5,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215113.4267852,
+    "first_seen": 1747215113.4267857
+  },
+  "rucksack": {
+    "encounters": 2,
+    "difficulty": 0.4,
+    "confidence": 0.7,
+    "last_seen": 1747215223.1866698,
+    "first_seen": 1747215113.426803
+  },
+  "crocheted": {
+    "encounters": 2,
+    "difficulty": 0.43333333333333335,
+    "confidence": 0.6666666666666666,
+    "last_seen": 1747215223.1866724,
+    "first_seen": 1747215113.4268224
+  },
+  "scarf": {
+    "encounters": 2,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.9333333333333332,
+    "last_seen": 1747215223.1866746,
+    "first_seen": 1747215113.4268365
+  },
+  "tome": {
+    "encounters": 2,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.95,
+    "last_seen": 1747215223.186679,
+    "first_seen": 1747215113.426877
+  },
+  "titled": {
+    "encounters": 2,
+    "difficulty": 0.2,
+    "confidence": 0.9,
+    "last_seen": 1747215223.186681,
+    "first_seen": 1747215113.4268901
+  },
+  "\u201cThe": {
+    "encounters": 2,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.8333333333333334,
+    "last_seen": 1747215223.186684,
+    "first_seen": 1747215113.4269142
+  },
+  "Sibilant": {
+    "encounters": 2,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.8333333333333334,
+    "last_seen": 1747215223.186686,
+    "first_seen": 1747215113.4269288
+  },
+  "Codex\u201d": {
+    "encounters": 2,
+    "difficulty": 0.2,
+    "confidence": 0.9,
+    "last_seen": 1747215223.1866894,
+    "first_seen": 1747215113.4269476
+  },
+  "ascended": {
+    "encounters": 2,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.8333333333333334,
+    "last_seen": 1747215223.186693,
+    "first_seen": 1747215113.4269743
+  },
+  "switchback": {
+    "encounters": 2,
+    "difficulty": 0.7333333333333334,
+    "confidence": 0.3666666666666666,
+    "last_seen": 1747215223.186696,
+    "first_seen": 1747215113.4269924
+  },
+  "path": {
+    "encounters": 2,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.8333333333333334,
+    "last_seen": 1747215223.1866984,
+    "first_seen": 1747215113.4270055
+  },
+  "narrowly": {
+    "encounters": 2,
+    "difficulty": 0.3666666666666667,
+    "confidence": 0.7333333333333333,
+    "last_seen": 1747215223.1867006,
+    "first_seen": 1747215113.4270191
+  },
+  "avoiding": {
+    "encounters": 2,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.8333333333333334,
+    "last_seen": 1747215223.1867025,
+    "first_seen": 1747215113.4270313
+  },
+  "slough": {
+    "encounters": 2,
+    "difficulty": 0.4666666666666667,
+    "confidence": 0.6333333333333333,
+    "last_seen": 1747215223.186705,
+    "first_seen": 1747215113.4270463
+  },
+  "treacherously": {
+    "encounters": 2,
+    "difficulty": 0.5333333333333333,
+    "confidence": 0.5666666666666667,
+    "last_seen": 1747215223.186709,
+    "first_seen": 1747215113.427066
+  },
+  "slick": {
+    "encounters": 2,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7999999999999999,
+    "last_seen": 1747215223.1867108,
+    "first_seen": 1747215113.427274
+  },
+  "shale": {
+    "encounters": 2,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7999999999999999,
+    "last_seen": 1747215223.1867125,
+    "first_seen": 1747215113.4272935
+  },
+  "Within": {
+    "encounters": 2,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215223.1867146,
+    "first_seen": 1747215113.4273095
+  },
+  "vestibule": {
+    "encounters": 2,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7999999999999999,
+    "last_seen": 1747215223.1867175,
+    "first_seen": 1747215113.4273298
+  },
+  "everything": {
+    "encounters": 2,
+    "difficulty": 0.4666666666666667,
+    "confidence": 0.6333333333333333,
+    "last_seen": 1747215223.1867194,
+    "first_seen": 1747215113.4273462
+  },
+  "echoed": {
+    "encounters": 2,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215223.1867213,
+    "first_seen": 1747215113.4273605
+  },
+  "discordant": {
+    "encounters": 2,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215223.1867247,
+    "first_seen": 1747215113.4273827
+  },
+  "chiaroscuro": {
+    "encounters": 2,
+    "difficulty": 0.5,
+    "confidence": 0.6,
+    "last_seen": 1747215223.1867266,
+    "first_seen": 1747215113.4273994
+  },
+  "hush": {
+    "encounters": 2,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.8333333333333334,
+    "last_seen": 1747215223.1867287,
+    "first_seen": 1747215113.4274137
+  },
+  "Floorboards": {
+    "encounters": 2,
+    "difficulty": 0.4666666666666667,
+    "confidence": 0.6333333333333333,
+    "last_seen": 1747215223.1867309,
+    "first_seen": 1747215113.4274306
+  },
+  "creaked": {
+    "encounters": 2,
+    "difficulty": 0.23333333333333336,
+    "confidence": 0.8666666666666666,
+    "last_seen": 1747215223.1867325,
+    "first_seen": 1747215113.4274452
+  },
+  "underfoot": {
+    "encounters": 2,
+    "difficulty": 0.4,
+    "confidence": 0.7,
+    "last_seen": 1747215223.186734,
+    "first_seen": 1747215113.4274602
+  },
+  "irregular": {
+    "encounters": 2,
+    "difficulty": 0.4,
+    "confidence": 0.7,
+    "last_seen": 1747215223.1867368,
+    "first_seen": 1747215113.427477
+  },
+  "syncopation": {
+    "encounters": 2,
+    "difficulty": 0.5,
+    "confidence": 0.6,
+    "last_seen": 1747215223.186739,
+    "first_seen": 1747215113.4274924
+  },
+  "Down": {
+    "encounters": 2,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.95,
+    "last_seen": 1747215223.1867409,
+    "first_seen": 1747215113.4275038
+  },
+  "spiral": {
+    "encounters": 2,
+    "difficulty": 0.2,
+    "confidence": 0.9,
+    "last_seen": 1747215223.1867435,
+    "first_seen": 1747215113.4275181
+  },
+  "stairwell": {
+    "encounters": 2,
+    "difficulty": 0.4,
+    "confidence": 0.7,
+    "last_seen": 1747215223.1867454,
+    "first_seen": 1747215113.4277253
+  },
+  "littered": {
+    "encounters": 2,
+    "difficulty": 0.5,
+    "confidence": 0.6,
+    "last_seen": 1747215223.186747,
+    "first_seen": 1747215113.427743
+  },
+  "broken": {
+    "encounters": 2,
+    "difficulty": 0.2,
+    "confidence": 0.9,
+    "last_seen": 1747215223.1867502,
+    "first_seen": 1747215113.4277596
+  },
+  "spectacles": {
+    "encounters": 2,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215223.186752,
+    "first_seen": 1747215113.4277732
+  },
+  "charred": {
+    "encounters": 2,
+    "difficulty": 0.4666666666666667,
+    "confidence": 0.6333333333333333,
+    "last_seen": 1747215223.1867547,
+    "first_seen": 1747215113.4277887
+  },
+  "manuscripts": {
+    "encounters": 2,
+    "difficulty": 0.5,
+    "confidence": 0.6,
+    "last_seen": 1747215223.1867566,
+    "first_seen": 1747215113.4278045
+  },
+  "found": {
+    "encounters": 5,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.95,
+    "last_seen": 1747215952.8311126,
+    "first_seen": 1747215113.4278233
+  },
+  "glyph-etched": {
+    "encounters": 2,
+    "difficulty": 0.8,
+    "confidence": 0.30000000000000004,
+    "last_seen": 1747215223.186763,
+    "first_seen": 1747215113.427841
+  },
+  "wall": {
+    "encounters": 4,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.95,
+    "last_seen": 1747215223.1867952,
+    "first_seen": 1747215113.4278529
+  },
+  "pulsating": {
+    "encounters": 2,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7999999999999999,
+    "last_seen": 1747215223.186767,
+    "first_seen": 1747215113.4278831
+  },
+  "faint": {
+    "encounters": 2,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.9333333333333332,
+    "last_seen": 1747215223.1867704,
+    "first_seen": 1747215113.427899
+  },
+  "ethereal": {
+    "encounters": 2,
+    "difficulty": 0.4,
+    "confidence": 0.7,
+    "last_seen": 1747215223.1867726,
+    "first_seen": 1747215113.4279127
+  },
+  "hum": {
+    "encounters": 2,
+    "difficulty": 0.1,
+    "confidence": 0.95,
+    "last_seen": 1747215223.1867745,
+    "first_seen": 1747215113.4279246
+  },
+  "He": {
+    "encounters": 4,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215113.427935,
+    "first_seen": 1747215113.4279351
+  },
+  "whispered": {
+    "encounters": 2,
+    "difficulty": 0.43333333333333335,
+    "confidence": 0.6666666666666666,
+    "last_seen": 1747215223.1867774,
+    "first_seen": 1747215113.4279494
+  },
+  "phrase": {
+    "encounters": 2,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215223.1867807,
+    "first_seen": 1747215113.4279652
+  },
+  "etched": {
+    "encounters": 2,
+    "difficulty": 0.4666666666666667,
+    "confidence": 0.6333333333333333,
+    "last_seen": 1747215223.1867828,
+    "first_seen": 1747215113.4279778
+  },
+  "\u201cPhthisis": {
+    "encounters": 2,
+    "difficulty": 0.5666666666666667,
+    "confidence": 0.5333333333333333,
+    "last_seen": 1747215223.1867878,
+    "first_seen": 1747215113.4280105
+  },
+  "begets": {
+    "encounters": 2,
+    "difficulty": 0.2,
+    "confidence": 0.9,
+    "last_seen": 1747215223.18679,
+    "first_seen": 1747215113.4280236
+  },
+  "silence.\u201d": {
+    "encounters": 2,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7999999999999999,
+    "last_seen": 1747215223.1867921,
+    "first_seen": 1747215113.4280431
+  },
+  "shuddered": {
+    "encounters": 2,
+    "difficulty": 0.5333333333333333,
+    "confidence": 0.5666666666666667,
+    "last_seen": 1747215223.1867974,
+    "first_seen": 1747215113.4280653
+  },
+  "splintered": {
+    "encounters": 2,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215223.1868005,
+    "first_seen": 1747215113.4280815
+  },
+  "revealing": {
+    "encounters": 2,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7999999999999999,
+    "last_seen": 1747215223.1868021,
+    "first_seen": 1747215113.4280944
+  },
+  "chamber": {
+    "encounters": 2,
+    "difficulty": 0.5,
+    "confidence": 0.6,
+    "last_seen": 1747215223.1868045,
+    "first_seen": 1747215113.4281092
+  },
+  "filled": {
+    "encounters": 2,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7999999999999999,
+    "last_seen": 1747215223.1868062,
+    "first_seen": 1747215113.4281209
+  },
+  "antiquated": {
+    "encounters": 2,
+    "difficulty": 0.4666666666666667,
+    "confidence": 0.6333333333333333,
+    "last_seen": 1747215223.186809,
+    "first_seen": 1747215113.4281375
+  },
+  "contraptions": {
+    "encounters": 2,
+    "difficulty": 0.6666666666666667,
+    "confidence": 0.43333333333333324,
+    "last_seen": 1747215223.1868112,
+    "first_seen": 1747215113.428153
+  },
+  "gears": {
+    "encounters": 2,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.9333333333333332,
+    "last_seen": 1747215223.1868134,
+    "first_seen": 1747215113.428165
+  },
+  "spun": {
+    "encounters": 2,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.95,
+    "last_seen": 1747215223.1868155,
+    "first_seen": 1747215113.4281762
+  },
+  "erratically": {
+    "encounters": 2,
+    "difficulty": 0.5666666666666667,
+    "confidence": 0.5333333333333333,
+    "last_seen": 1747215223.186818,
+    "first_seen": 1747215113.4281998
+  },
+  "bellows": {
+    "encounters": 2,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215223.1868198,
+    "first_seen": 1747215113.4282117
+  },
+  "hissed": {
+    "encounters": 2,
+    "difficulty": 0.43333333333333335,
+    "confidence": 0.6666666666666666,
+    "last_seen": 1747215223.1868217,
+    "first_seen": 1747215113.4282243
+  },
+  "chthonic": {
+    "encounters": 2,
+    "difficulty": 0.5333333333333333,
+    "confidence": 0.5666666666666667,
+    "last_seen": 1747215223.186825,
+    "first_seen": 1747215113.4282417
+  },
+  "serpents": {
+    "encounters": 2,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.8333333333333334,
+    "last_seen": 1747215223.186843,
+    "first_seen": 1747215113.4282546
+  },
+  "filigree-inscribed": {
+    "encounters": 2,
+    "difficulty": 0.5,
+    "confidence": 0.6,
+    "last_seen": 1747215223.1868467,
+    "first_seen": 1747215113.4282753
+  },
+  "cylinders": {
+    "encounters": 2,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7999999999999999,
+    "last_seen": 1747215223.1868494,
+    "first_seen": 1747215113.4283047
+  },
+  "vibrated": {
+    "encounters": 2,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.8333333333333334,
+    "last_seen": 1747215223.1868513,
+    "first_seen": 1747215113.4283175
+  },
+  "midair": {
+    "encounters": 2,
+    "difficulty": 0.2,
+    "confidence": 0.9,
+    "last_seen": 1747215223.1868534,
+    "first_seen": 1747215113.4283295
+  },
+  "Just": {
+    "encounters": 2,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215113.428357,
+    "first_seen": 1747215113.4283571
+  },
+  "reached": {
+    "encounters": 2,
+    "difficulty": 0.3666666666666667,
+    "confidence": 0.7333333333333333,
+    "last_seen": 1747215223.1868675,
+    "first_seen": 1747215113.4283752
+  },
+  "latticed": {
+    "encounters": 2,
+    "difficulty": 0.5,
+    "confidence": 0.6,
+    "last_seen": 1747215223.1868713,
+    "first_seen": 1747215113.4283931
+  },
+  "lever": {
+    "encounters": 2,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.9333333333333332,
+    "last_seen": 1747215223.1868737,
+    "first_seen": 1747215113.428407
+  },
+  "mechanical": {
+    "encounters": 2,
+    "difficulty": 0.4666666666666667,
+    "confidence": 0.6333333333333333,
+    "last_seen": 1747215223.1868768,
+    "first_seen": 1747215113.4284225
+  },
+  "sentinel": {
+    "encounters": 2,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.8333333333333334,
+    "last_seen": 1747215223.1868787,
+    "first_seen": 1747215113.428435
+  },
+  "emerged\u2014its": {
+    "encounters": 2,
+    "difficulty": 0.3666666666666667,
+    "confidence": 0.7333333333333333,
+    "last_seen": 1747215223.1868813,
+    "first_seen": 1747215113.4284575
+  },
+  "carapace": {
+    "encounters": 2,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.8333333333333334,
+    "last_seen": 1747215223.1868837,
+    "first_seen": 1747215113.4284701
+  },
+  "covered": {
+    "encounters": 2,
+    "difficulty": 0.23333333333333336,
+    "confidence": 0.8666666666666666,
+    "last_seen": 1747215223.1868854,
+    "first_seen": 1747215113.4284816
+  },
+  "rusted": {
+    "encounters": 2,
+    "difficulty": 0.2,
+    "confidence": 0.9,
+    "last_seen": 1747215223.1868885,
+    "first_seen": 1747215113.4284968
+  },
+  "chevrons": {
+    "encounters": 2,
+    "difficulty": 0.4,
+    "confidence": 0.7,
+    "last_seen": 1747215223.1868901,
+    "first_seen": 1747215113.4285092
+  },
+  "voice": {
+    "encounters": 2,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.9333333333333332,
+    "last_seen": 1747215223.186892,
+    "first_seen": 1747215113.42852
+  },
+  "fractured": {
+    "encounters": 2,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7999999999999999,
+    "last_seen": 1747215223.1868951,
+    "first_seen": 1747215113.4285347
+  },
+  "glass": {
+    "encounters": 2,
+    "difficulty": 0.4,
+    "confidence": 0.7,
+    "last_seen": 1747215223.1868978,
+    "first_seen": 1747215113.428547
+  },
+  "\u201cYou": {
+    "encounters": 2,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.95,
+    "last_seen": 1747215223.1869001,
+    "first_seen": 1747215113.4285624
+  },
+  "are": {
+    "encounters": 3,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215113.4285743,
+    "first_seen": 1747215113.4285746
+  },
+  "phonemically": {
+    "encounters": 2,
+    "difficulty": 0.6333333333333333,
+    "confidence": 0.4666666666666667,
+    "last_seen": 1747215223.1869047,
+    "first_seen": 1747215113.428755
+  },
+  "authorized.\u201d": {
+    "encounters": 2,
+    "difficulty": 0.5333333333333333,
+    "confidence": 0.5666666666666667,
+    "last_seen": 1747215223.1869073,
+    "first_seen": 1747215113.4287891
+  },
+  "undeterred": {
+    "encounters": 2,
+    "difficulty": 0.43333333333333335,
+    "confidence": 0.6666666666666666,
+    "last_seen": 1747215223.1869116,
+    "first_seen": 1747215113.4288187
+  },
+  "cleared": {
+    "encounters": 2,
+    "difficulty": 0.23333333333333336,
+    "confidence": 0.8666666666666666,
+    "last_seen": 1747215223.1869133,
+    "first_seen": 1747215113.428836
+  },
+  "throat": {
+    "encounters": 2,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215223.1869168,
+    "first_seen": 1747215113.428856
+  },
+  "enunciated": {
+    "encounters": 2,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215223.18692,
+    "first_seen": 1747215113.4288757
+  },
+  "\u201cQuizzically": {
+    "encounters": 2,
+    "difficulty": 0.7333333333333334,
+    "confidence": 0.3666666666666666,
+    "last_seen": 1747215223.1869226,
+    "first_seen": 1747215113.4289012
+  },
+  "question": {
+    "encounters": 2,
+    "difficulty": 0.5333333333333333,
+    "confidence": 0.5666666666666667,
+    "last_seen": 1747215223.1869254,
+    "first_seen": 1747215113.428921
+  },
+  "quintessential": {
+    "encounters": 2,
+    "difficulty": 0.7666666666666667,
+    "confidence": 0.33333333333333326,
+    "last_seen": 1747215223.1869283,
+    "first_seen": 1747215113.428942
+  },
+  "quintessence": {
+    "encounters": 2,
+    "difficulty": 0.7666666666666667,
+    "confidence": 0.33333333333333326,
+    "last_seen": 1747215223.1869304,
+    "first_seen": 1747215113.4290102
+  },
+  "quiescence.\u201d": {
+    "encounters": 2,
+    "difficulty": 0.5333333333333333,
+    "confidence": 0.5666666666666667,
+    "last_seen": 1747215223.186934,
+    "first_seen": 1747215113.4290495
+  },
+  "machine": {
+    "encounters": 2,
+    "difficulty": 0.3666666666666667,
+    "confidence": 0.7333333333333333,
+    "last_seen": 1747215223.186937,
+    "first_seen": 1747215113.42907
+  },
+  "paused\u2014then": {
+    "encounters": 2,
+    "difficulty": 0.5,
+    "confidence": 0.6,
+    "last_seen": 1747215223.1869397,
+    "first_seen": 1747215113.4290955
+  },
+  "bowed": {
+    "encounters": 2,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.9333333333333332,
+    "last_seen": 1747215223.186942,
+    "first_seen": 1747215113.4291291
+  },
+  "cacophony": {
+    "encounters": 2,
+    "difficulty": 0.43333333333333335,
+    "confidence": 0.6666666666666666,
+    "last_seen": 1747215223.18695,
+    "first_seen": 1747215113.4291594
+  },
+  "began": {
+    "encounters": 3,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215113.429173,
+    "first_seen": 1747215113.429173
+  },
+  "again": {
+    "encounters": 2,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.9333333333333332,
+    "last_seen": 1747215223.186954,
+    "first_seen": 1747215113.4291856
+  },
+  "Let": {
+    "encounters": 2,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215113.4291978,
+    "first_seen": 1747215113.429198
+  },
+  "me": {
+    "encounters": 3,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215113.4293113,
+    "first_seen": 1747215113.429312
+  },
+  "know": {
+    "encounters": 3,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.7333333333333334,
+    "last_seen": 1747215113.4294276,
+    "first_seen": 1747215113.4294283
+  },
+  "if": {
+    "encounters": 3,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215113.4294522,
+    "first_seen": 1747215113.4294527
+  },
+  "want": {
+    "encounters": 3,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215113.429473,
+    "first_seen": 1747215113.4294732
+  },
+  "typing-practice": {
+    "encounters": 2,
+    "difficulty": 0.4,
+    "confidence": 0.7,
+    "last_seen": 1747215223.186965,
+    "first_seen": 1747215113.4294965
+  },
+  "version": {
+    "encounters": 2,
+    "difficulty": 0.23333333333333336,
+    "confidence": 0.8666666666666666,
+    "last_seen": 1747215223.1869676,
+    "first_seen": 1747215113.4295113
+  },
+  "spacing": {
+    "encounters": 2,
+    "difficulty": 0.23333333333333336,
+    "confidence": 0.8666666666666666,
+    "last_seen": 1747215223.1869707,
+    "first_seen": 1747215113.4295304
+  },
+  "between": {
+    "encounters": 3,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.6666666666666666,
+    "last_seen": 1747215113.4295466,
+    "first_seen": 1747215113.429547
+  },
+  "tricky": {
+    "encounters": 2,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215223.1869743,
+    "first_seen": 1747215113.429561
+  },
+  "combos": {
+    "encounters": 2,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215223.186976,
+    "first_seen": 1747215113.429575
+  },
+  "ph": {
+    "encounters": 2,
+    "difficulty": 0.2,
+    "confidence": 0.9,
+    "last_seen": 1747215223.1869795,
+    "first_seen": 1747215113.4295917
+  },
+  "gh": {
+    "encounters": 2,
+    "difficulty": 0.2,
+    "confidence": 0.9,
+    "last_seen": 1747215223.186982,
+    "first_seen": 1747215113.4296043
+  },
+  "tt": {
+    "encounters": 2,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7999999999999999,
+    "last_seen": 1747215223.1869838,
+    "first_seen": 1747215113.4296167
+  },
+  "etc": {
+    "encounters": 2,
+    "difficulty": 0.1,
+    "confidence": 0.95,
+    "last_seen": 1747215223.186986,
+    "first_seen": 1747215113.4296298
+  },
+  "or": {
+    "encounters": 3,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215113.4296417,
+    "first_seen": 1747215113.429642
+  },
+  "vocab": {
+    "encounters": 2,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.9333333333333332,
+    "last_seen": 1747215223.1869898,
+    "first_seen": 1747215113.4296582
+  },
+  "challenge": {
+    "encounters": 2,
+    "difficulty": 0.5333333333333333,
+    "confidence": 0.5666666666666667,
+    "last_seen": 1747215223.186992,
+    "first_seen": 1747215113.4296882
+  },
+  "quiz": {
+    "encounters": 2,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.8333333333333334,
+    "last_seen": 1747215223.1869938,
+    "first_seen": 1747215113.4297013
+  },
+  "story": {
+    "encounters": 3,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215113.4297194,
+    "first_seen": 1747215113.42972
+  },
+  "have": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8306067,
+    "first_seen": 1747215952.830607
+  },
+  "on": {
+    "encounters": 1,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215952.830619,
+    "first_seen": 1747215952.8306193
+  },
+  "do": {
+    "encounters": 1,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215952.830627,
+    "first_seen": 1747215952.8306274
+  },
+  "this": {
+    "encounters": 1,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.7333333333333334,
+    "last_seen": 1747215952.8306322,
+    "first_seen": 1747215952.8306324
+  },
+  "but": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8306358,
+    "first_seen": 1747215952.8306358
+  },
+  "by": {
+    "encounters": 1,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215952.8306396,
+    "first_seen": 1747215952.8306396
+  },
+  "they": {
+    "encounters": 1,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.7333333333333334,
+    "last_seen": 1747215952.8306432,
+    "first_seen": 1747215952.8306432
+  },
+  "we": {
+    "encounters": 1,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215952.830648,
+    "first_seen": 1747215952.8306484
+  },
+  "say": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8306513,
+    "first_seen": 1747215952.8306513
+  },
+  "her": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8306541,
+    "first_seen": 1747215952.8306541
+  },
+  "she": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.830657,
+    "first_seen": 1747215952.830657
+  },
+  "will": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.8306618,
+    "first_seen": 1747215952.8306618
+  },
+  "my": {
+    "encounters": 1,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215952.8306649,
+    "first_seen": 1747215952.8306649
+  },
+  "one": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8306677,
+    "first_seen": 1747215952.8306677
+  },
+  "all": {
+    "encounters": 1,
+    "difficulty": 0.2,
+    "confidence": 0.8,
+    "last_seen": 1747215952.8306708,
+    "first_seen": 1747215952.8306708
+  },
+  "would": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.830674,
+    "first_seen": 1747215952.8306742
+  },
+  "their": {
+    "encounters": 1,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7,
+    "last_seen": 1747215952.8306782,
+    "first_seen": 1747215952.8306782
+  },
+  "what": {
+    "encounters": 1,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.7333333333333334,
+    "last_seen": 1747215952.830681,
+    "first_seen": 1747215952.830681
+  },
+  "so": {
+    "encounters": 1,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215952.8306837,
+    "first_seen": 1747215952.8306837
+  },
+  "up": {
+    "encounters": 1,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215952.830686,
+    "first_seen": 1747215952.830686
+  },
+  "out": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.830689,
+    "first_seen": 1747215952.8306892
+  },
+  "about": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.830693,
+    "first_seen": 1747215952.8306935
+  },
+  "who": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.8306959,
+    "first_seen": 1747215952.8306959
+  },
+  "which": {
+    "encounters": 1,
+    "difficulty": 0.43333333333333335,
+    "confidence": 0.5666666666666667,
+    "last_seen": 1747215952.8306997,
+    "first_seen": 1747215952.8306997
+  },
+  "go": {
+    "encounters": 1,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215952.830702,
+    "first_seen": 1747215952.830702
+  },
+  "when": {
+    "encounters": 1,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.7333333333333334,
+    "last_seen": 1747215952.830706,
+    "first_seen": 1747215952.8307061
+  },
+  "make": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.830709,
+    "first_seen": 1747215952.830709
+  },
+  "time": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8307161,
+    "first_seen": 1747215952.8307161
+  },
+  "no": {
+    "encounters": 1,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215952.8307188,
+    "first_seen": 1747215952.830719
+  },
+  "just": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8307219,
+    "first_seen": 1747215952.8307219
+  },
+  "him": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8307247,
+    "first_seen": 1747215952.8307247
+  },
+  "take": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.830728,
+    "first_seen": 1747215952.8307283
+  },
+  "people": {
+    "encounters": 1,
+    "difficulty": 0.2,
+    "confidence": 0.8,
+    "last_seen": 1747215952.830731,
+    "first_seen": 1747215952.830731
+  },
+  "into": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8307338,
+    "first_seen": 1747215952.830734
+  },
+  "year": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8307369,
+    "first_seen": 1747215952.8307369
+  },
+  "good": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.8307402,
+    "first_seen": 1747215952.8307402
+  },
+  "some": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.830743,
+    "first_seen": 1747215952.8307433
+  },
+  "them": {
+    "encounters": 1,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.7333333333333334,
+    "last_seen": 1747215952.8307579,
+    "first_seen": 1747215952.8307579
+  },
+  "see": {
+    "encounters": 1,
+    "difficulty": 0.2,
+    "confidence": 0.8,
+    "last_seen": 1747215952.8307607,
+    "first_seen": 1747215952.8307607
+  },
+  "other": {
+    "encounters": 1,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7,
+    "last_seen": 1747215952.830767,
+    "first_seen": 1747215952.830767
+  },
+  "than": {
+    "encounters": 1,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.7333333333333334,
+    "last_seen": 1747215952.83077,
+    "first_seen": 1747215952.83077
+  },
+  "then": {
+    "encounters": 1,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.7333333333333334,
+    "last_seen": 1747215952.8307726,
+    "first_seen": 1747215952.8307726
+  },
+  "now": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8307757,
+    "first_seen": 1747215952.8307757
+  },
+  "look": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.8307784,
+    "first_seen": 1747215952.8307786
+  },
+  "only": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8307812,
+    "first_seen": 1747215952.8307812
+  },
+  "come": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8307838,
+    "first_seen": 1747215952.830784
+  },
+  "its": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8307867,
+    "first_seen": 1747215952.8307867
+  },
+  "over": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8307917,
+    "first_seen": 1747215952.8307917
+  },
+  "think": {
+    "encounters": 1,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7,
+    "last_seen": 1747215952.8307948,
+    "first_seen": 1747215952.830795
+  },
+  "also": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.830798,
+    "first_seen": 1747215952.830798
+  },
+  "after": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.830802,
+    "first_seen": 1747215952.830802
+  },
+  "use": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8308046,
+    "first_seen": 1747215952.8308046
+  },
+  "two": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8308072,
+    "first_seen": 1747215952.8308072
+  },
+  "how": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8308098,
+    "first_seen": 1747215952.83081
+  },
+  "our": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8308127,
+    "first_seen": 1747215952.8308127
+  },
+  "work": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.830816,
+    "first_seen": 1747215952.830816
+  },
+  "first": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8308191,
+    "first_seen": 1747215952.8308191
+  },
+  "well": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.830822,
+    "first_seen": 1747215952.830822
+  },
+  "way": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8308244,
+    "first_seen": 1747215952.8308246
+  },
+  "even": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8308275,
+    "first_seen": 1747215952.8308275
+  },
+  "new": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.83083,
+    "first_seen": 1747215952.8308303
+  },
+  "because": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333336,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.8308349,
+    "first_seen": 1747215952.8308349
+  },
+  "any": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8308377,
+    "first_seen": 1747215952.830838
+  },
+  "these": {
+    "encounters": 1,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7,
+    "last_seen": 1747215952.8308413,
+    "first_seen": 1747215952.8308413
+  },
+  "give": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8308442,
+    "first_seen": 1747215952.8308444
+  },
+  "day": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8308473,
+    "first_seen": 1747215952.8308473
+  },
+  "most": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.83085,
+    "first_seen": 1747215952.83085
+  },
+  "us": {
+    "encounters": 1,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215952.8308523,
+    "first_seen": 1747215952.8308523
+  },
+  "is": {
+    "encounters": 1,
+    "difficulty": 0.06666666666666667,
+    "confidence": 0.9333333333333333,
+    "last_seen": 1747215952.830855,
+    "first_seen": 1747215952.830855
+  },
+  "was": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8308578,
+    "first_seen": 1747215952.8308578
+  },
+  "word": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8308625,
+    "first_seen": 1747215952.8308628
+  },
+  "were": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8308678,
+    "first_seen": 1747215952.8308678
+  },
+  "said": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8308706,
+    "first_seen": 1747215952.8308706
+  },
+  "each": {
+    "encounters": 1,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.7333333333333334,
+    "last_seen": 1747215952.8308735,
+    "first_seen": 1747215952.8308735
+  },
+  "many": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8308764,
+    "first_seen": 1747215952.8308764
+  },
+  "write": {
+    "encounters": 1,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7,
+    "last_seen": 1747215952.8308794,
+    "first_seen": 1747215952.8308794
+  },
+  "thing": {
+    "encounters": 1,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7,
+    "last_seen": 1747215952.8308864,
+    "first_seen": 1747215952.8308864
+  },
+  "has": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.830889,
+    "first_seen": 1747215952.830889
+  },
+  "more": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.830892,
+    "first_seen": 1747215952.830892
+  },
+  "did": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8308964,
+    "first_seen": 1747215952.8308964
+  },
+  "sound": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8308992,
+    "first_seen": 1747215952.8308992
+  },
+  "number": {
+    "encounters": 1,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.6666666666666666,
+    "last_seen": 1747215952.8309028,
+    "first_seen": 1747215952.8309028
+  },
+  "water": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.830906,
+    "first_seen": 1747215952.830906
+  },
+  "call": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.8309083,
+    "first_seen": 1747215952.8309088
+  },
+  "may": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8309112,
+    "first_seen": 1747215952.8309112
+  },
+  "down": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.830914,
+    "first_seen": 1747215952.830914
+  },
+  "side": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.830917,
+    "first_seen": 1747215952.830917
+  },
+  "been": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.8309197,
+    "first_seen": 1747215952.8309197
+  },
+  "find": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8309226,
+    "first_seen": 1747215952.8309226
+  },
+  "part": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8309255,
+    "first_seen": 1747215952.8309255
+  },
+  "place": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8309283,
+    "first_seen": 1747215952.8309283
+  },
+  "made": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.830933,
+    "first_seen": 1747215952.830933
+  },
+  "live": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8309357,
+    "first_seen": 1747215952.8309357
+  },
+  "where": {
+    "encounters": 1,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7,
+    "last_seen": 1747215952.8309388,
+    "first_seen": 1747215952.8309388
+  },
+  "little": {
+    "encounters": 1,
+    "difficulty": 0.43333333333333335,
+    "confidence": 0.5666666666666667,
+    "last_seen": 1747215952.830942,
+    "first_seen": 1747215952.8309422
+  },
+  "round": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8309448,
+    "first_seen": 1747215952.830945
+  },
+  "man": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8309476,
+    "first_seen": 1747215952.8309479
+  },
+  "came": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8309505,
+    "first_seen": 1747215952.8309505
+  },
+  "show": {
+    "encounters": 1,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.7333333333333334,
+    "last_seen": 1747215952.830954,
+    "first_seen": 1747215952.830954
+  },
+  "every": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8309572,
+    "first_seen": 1747215952.8309572
+  },
+  "under": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.83096,
+    "first_seen": 1747215952.83096
+  },
+  "name": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.830963,
+    "first_seen": 1747215952.830963
+  },
+  "very": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.830966,
+    "first_seen": 1747215952.830966
+  },
+  "through": {
+    "encounters": 1,
+    "difficulty": 0.6333333333333334,
+    "confidence": 0.3666666666666666,
+    "last_seen": 1747215952.8309717,
+    "first_seen": 1747215952.830972
+  },
+  "form": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8309746,
+    "first_seen": 1747215952.8309746
+  },
+  "sentence": {
+    "encounters": 1,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.7333333333333334,
+    "last_seen": 1747215952.8309784,
+    "first_seen": 1747215952.8309784
+  },
+  "great": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8309815,
+    "first_seen": 1747215952.8309815
+  },
+  "low": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.830985,
+    "first_seen": 1747215952.830985
+  },
+  "line": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8309877,
+    "first_seen": 1747215952.830988
+  },
+  "differ": {
+    "encounters": 1,
+    "difficulty": 0.43333333333333335,
+    "confidence": 0.5666666666666667,
+    "last_seen": 1747215952.830991,
+    "first_seen": 1747215952.830991
+  },
+  "turn": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.830994,
+    "first_seen": 1747215952.830994
+  },
+  "cause": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8309984,
+    "first_seen": 1747215952.8309984
+  },
+  "much": {
+    "encounters": 1,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.7333333333333334,
+    "last_seen": 1747215952.8310015,
+    "first_seen": 1747215952.8310015
+  },
+  "mean": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8310044,
+    "first_seen": 1747215952.8310044
+  },
+  "before": {
+    "encounters": 1,
+    "difficulty": 0.2,
+    "confidence": 0.8,
+    "last_seen": 1747215952.8310075,
+    "first_seen": 1747215952.8310075
+  },
+  "move": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8310173,
+    "first_seen": 1747215952.8310173
+  },
+  "right": {
+    "encounters": 1,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7,
+    "last_seen": 1747215952.8310206,
+    "first_seen": 1747215952.8310206
+  },
+  "boy": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8310232,
+    "first_seen": 1747215952.8310232
+  },
+  "old": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8310258,
+    "first_seen": 1747215952.8310258
+  },
+  "too": {
+    "encounters": 1,
+    "difficulty": 0.2,
+    "confidence": 0.8,
+    "last_seen": 1747215952.8310282,
+    "first_seen": 1747215952.8310285
+  },
+  "same": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.831031,
+    "first_seen": 1747215952.831031
+  },
+  "tell": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.8310337,
+    "first_seen": 1747215952.831034
+  },
+  "does": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8310363,
+    "first_seen": 1747215952.8310363
+  },
+  "set": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.831039,
+    "first_seen": 1747215952.831039
+  },
+  "three": {
+    "encounters": 1,
+    "difficulty": 0.4,
+    "confidence": 0.6,
+    "last_seen": 1747215952.831042,
+    "first_seen": 1747215952.831042
+  },
+  "air": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8310447,
+    "first_seen": 1747215952.831045
+  },
+  "play": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8310475,
+    "first_seen": 1747215952.8310475
+  },
+  "small": {
+    "encounters": 1,
+    "difficulty": 0.2666666666666667,
+    "confidence": 0.7333333333333333,
+    "last_seen": 1747215952.8310618,
+    "first_seen": 1747215952.8310618
+  },
+  "end": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.831065,
+    "first_seen": 1747215952.831065
+  },
+  "put": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8310673,
+    "first_seen": 1747215952.8310673
+  },
+  "home": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8310702,
+    "first_seen": 1747215952.8310704
+  },
+  "read": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.831073,
+    "first_seen": 1747215952.8310733
+  },
+  "hand": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.831076,
+    "first_seen": 1747215952.831076
+  },
+  "port": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8310783,
+    "first_seen": 1747215952.8310788
+  },
+  "self": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8310812,
+    "first_seen": 1747215952.8310814
+  },
+  "earth": {
+    "encounters": 1,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7,
+    "last_seen": 1747215952.8310866,
+    "first_seen": 1747215952.8310866
+  },
+  "father": {
+    "encounters": 1,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.6666666666666666,
+    "last_seen": 1747215952.8310902,
+    "first_seen": 1747215952.8310902
+  },
+  "head": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8310933,
+    "first_seen": 1747215952.8310933
+  },
+  "stand": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8310962,
+    "first_seen": 1747215952.8310964
+  },
+  "own": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8310988,
+    "first_seen": 1747215952.8310988
+  },
+  "page": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8311017,
+    "first_seen": 1747215952.8311017
+  },
+  "should": {
+    "encounters": 1,
+    "difficulty": 0.33333333333333337,
+    "confidence": 0.6666666666666666,
+    "last_seen": 1747215952.8311048,
+    "first_seen": 1747215952.8311048
+  },
+  "country": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333336,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.8311079,
+    "first_seen": 1747215952.831108
+  },
+  "answer": {
+    "encounters": 1,
+    "difficulty": 0.2,
+    "confidence": 0.8,
+    "last_seen": 1747215952.8311176,
+    "first_seen": 1747215952.8311176
+  },
+  "school": {
+    "encounters": 1,
+    "difficulty": 0.5666666666666667,
+    "confidence": 0.43333333333333335,
+    "last_seen": 1747215952.8311217,
+    "first_seen": 1747215952.8311217
+  },
+  "grow": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8311245,
+    "first_seen": 1747215952.8311245
+  },
+  "study": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8311274,
+    "first_seen": 1747215952.8311274
+  },
+  "still": {
+    "encounters": 1,
+    "difficulty": 0.2666666666666667,
+    "confidence": 0.7333333333333333,
+    "last_seen": 1747215952.83113,
+    "first_seen": 1747215952.83113
+  },
+  "learn": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.831133,
+    "first_seen": 1747215952.831133
+  },
+  "plant": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8311357,
+    "first_seen": 1747215952.8311357
+  },
+  "cover": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8311386,
+    "first_seen": 1747215952.8311388
+  },
+  "food": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.8311415,
+    "first_seen": 1747215952.8311415
+  },
+  "sun": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8311439,
+    "first_seen": 1747215952.831144
+  },
+  "four": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8311467,
+    "first_seen": 1747215952.8311467
+  },
+  "thought": {
+    "encounters": 1,
+    "difficulty": 0.6333333333333334,
+    "confidence": 0.3666666666666666,
+    "last_seen": 1747215952.83115,
+    "first_seen": 1747215952.83115
+  },
+  "let": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8311555,
+    "first_seen": 1747215952.8311555
+  },
+  "eye": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8311589,
+    "first_seen": 1747215952.831159
+  },
+  "never": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8311617,
+    "first_seen": 1747215952.8311617
+  },
+  "last": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8311644,
+    "first_seen": 1747215952.8311646
+  },
+  "door": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.8311672,
+    "first_seen": 1747215952.8311672
+  },
+  "city": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.831171,
+    "first_seen": 1747215952.831171
+  },
+  "tree": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.831174,
+    "first_seen": 1747215952.8311741
+  },
+  "cross": {
+    "encounters": 1,
+    "difficulty": 0.4,
+    "confidence": 0.6,
+    "last_seen": 1747215952.831177,
+    "first_seen": 1747215952.831177
+  },
+  "since": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.83118,
+    "first_seen": 1747215952.83118
+  },
+  "hard": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8311834,
+    "first_seen": 1747215952.8311834
+  },
+  "start": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8311865,
+    "first_seen": 1747215952.8311865
+  },
+  "might": {
+    "encounters": 1,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7,
+    "last_seen": 1747215952.8311894,
+    "first_seen": 1747215952.8311899
+  },
+  "saw": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8311949,
+    "first_seen": 1747215952.8311949
+  },
+  "far": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8311977,
+    "first_seen": 1747215952.8311977
+  },
+  "sea": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8312004,
+    "first_seen": 1747215952.8312004
+  },
+  "draw": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.831203,
+    "first_seen": 1747215952.831203
+  },
+  "left": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8312058,
+    "first_seen": 1747215952.831206
+  },
+  "late": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8312087,
+    "first_seen": 1747215952.8312087
+  },
+  "run": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8312116,
+    "first_seen": 1747215952.8312116
+  },
+  "don't": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8312168,
+    "first_seen": 1747215952.8312168
+  },
+  "press": {
+    "encounters": 1,
+    "difficulty": 0.4,
+    "confidence": 0.6,
+    "last_seen": 1747215952.831221,
+    "first_seen": 1747215952.8312213
+  },
+  "close": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.831224,
+    "first_seen": 1747215952.831224
+  },
+  "night": {
+    "encounters": 1,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7,
+    "last_seen": 1747215952.8312268,
+    "first_seen": 1747215952.831227
+  },
+  "real": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8312297,
+    "first_seen": 1747215952.8312297
+  },
+  "life": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8312325,
+    "first_seen": 1747215952.8312325
+  },
+  "few": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8312356,
+    "first_seen": 1747215952.8312356
+  },
+  "north": {
+    "encounters": 1,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7,
+    "last_seen": 1747215952.8312387,
+    "first_seen": 1747215952.831239
+  },
+  "open": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8312418,
+    "first_seen": 1747215952.8312418
+  },
+  "seem": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.8312447,
+    "first_seen": 1747215952.831245
+  },
+  "together": {
+    "encounters": 1,
+    "difficulty": 0.4,
+    "confidence": 0.6,
+    "last_seen": 1747215952.8312495,
+    "first_seen": 1747215952.8312495
+  },
+  "next": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8312526,
+    "first_seen": 1747215952.8312526
+  },
+  "white": {
+    "encounters": 1,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7,
+    "last_seen": 1747215952.8312554,
+    "first_seen": 1747215952.8312554
+  },
+  "children": {
+    "encounters": 1,
+    "difficulty": 0.4,
+    "confidence": 0.6,
+    "last_seen": 1747215952.8312597,
+    "first_seen": 1747215952.8312597
+  },
+  "begin": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8312628,
+    "first_seen": 1747215952.831263
+  },
+  "got": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8312654,
+    "first_seen": 1747215952.8312654
+  },
+  "walk": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8312685,
+    "first_seen": 1747215952.8312685
+  },
+  "example": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333336,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.8312716,
+    "first_seen": 1747215952.8312716
+  },
+  "ease": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8312745,
+    "first_seen": 1747215952.8312745
+  },
+  "paper": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8312774,
+    "first_seen": 1747215952.8312776
+  },
+  "group": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8312805,
+    "first_seen": 1747215952.8312805
+  },
+  "always": {
+    "encounters": 1,
+    "difficulty": 0.2,
+    "confidence": 0.8,
+    "last_seen": 1747215952.8312836,
+    "first_seen": 1747215952.8312836
+  },
+  "music": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8312864,
+    "first_seen": 1747215952.8312864
+  },
+  "those": {
+    "encounters": 1,
+    "difficulty": 0.30000000000000004,
+    "confidence": 0.7,
+    "last_seen": 1747215952.8312895,
+    "first_seen": 1747215952.8312895
+  },
+  "both": {
+    "encounters": 1,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.7333333333333334,
+    "last_seen": 1747215952.8312924,
+    "first_seen": 1747215952.8312924
+  },
+  "mark": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8312974,
+    "first_seen": 1747215952.8312974
+  },
+  "often": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8313003,
+    "first_seen": 1747215952.8313005
+  },
+  "letter": {
+    "encounters": 1,
+    "difficulty": 0.43333333333333335,
+    "confidence": 0.5666666666666667,
+    "last_seen": 1747215952.8313036,
+    "first_seen": 1747215952.8313036
+  },
+  "until": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.831307,
+    "first_seen": 1747215952.831307
+  },
+  "mile": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8313098,
+    "first_seen": 1747215952.83131
+  },
+  "river": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.831313,
+    "first_seen": 1747215952.8313131
+  },
+  "car": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.831316,
+    "first_seen": 1747215952.831316
+  },
+  "feet": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.8313208,
+    "first_seen": 1747215952.8313208
+  },
+  "care": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8313236,
+    "first_seen": 1747215952.8313236
+  },
+  "second": {
+    "encounters": 1,
+    "difficulty": 0.2,
+    "confidence": 0.8,
+    "last_seen": 1747215952.8313272,
+    "first_seen": 1747215952.8313272
+  },
+  "book": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.8313308,
+    "first_seen": 1747215952.8313308
+  },
+  "carry": {
+    "encounters": 1,
+    "difficulty": 0.2666666666666667,
+    "confidence": 0.7333333333333333,
+    "last_seen": 1747215952.8313339,
+    "first_seen": 1747215952.8313339
+  },
+  "took": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.8313367,
+    "first_seen": 1747215952.8313367
+  },
+  "science": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333336,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.8313406,
+    "first_seen": 1747215952.8313406
+  },
+  "eat": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8313432,
+    "first_seen": 1747215952.8313434
+  },
+  "room": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.831346,
+    "first_seen": 1747215952.831346
+  },
+  "friend": {
+    "encounters": 1,
+    "difficulty": 0.2,
+    "confidence": 0.8,
+    "last_seen": 1747215952.8313487,
+    "first_seen": 1747215952.831349
+  },
+  "idea": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8313525,
+    "first_seen": 1747215952.8313525
+  },
+  "fish": {
+    "encounters": 1,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.7333333333333334,
+    "last_seen": 1747215952.8313553,
+    "first_seen": 1747215952.8313553
+  },
+  "mountain": {
+    "encounters": 1,
+    "difficulty": 0.26666666666666666,
+    "confidence": 0.7333333333333334,
+    "last_seen": 1747215952.8313618,
+    "first_seen": 1747215952.8313618
+  },
+  "stop": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.831365,
+    "first_seen": 1747215952.831365
+  },
+  "once": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.831368,
+    "first_seen": 1747215952.831368
+  },
+  "base": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8313715,
+    "first_seen": 1747215952.8313715
+  },
+  "hear": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8313744,
+    "first_seen": 1747215952.8313744
+  },
+  "horse": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8313768,
+    "first_seen": 1747215952.8313773
+  },
+  "cut": {
+    "encounters": 1,
+    "difficulty": 0.1,
+    "confidence": 0.9,
+    "last_seen": 1747215952.8313797,
+    "first_seen": 1747215952.8313797
+  },
+  "sure": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8313823,
+    "first_seen": 1747215952.8313823
+  },
+  "watch": {
+    "encounters": 1,
+    "difficulty": 0.43333333333333335,
+    "confidence": 0.5666666666666667,
+    "last_seen": 1747215952.8313856,
+    "first_seen": 1747215952.8313856
+  },
+  "color": {
+    "encounters": 1,
+    "difficulty": 0.16666666666666669,
+    "confidence": 0.8333333333333333,
+    "last_seen": 1747215952.8313887,
+    "first_seen": 1747215952.8313887
+  },
+  "face": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8313918,
+    "first_seen": 1747215952.8313918
+  },
+  "wood": {
+    "encounters": 1,
+    "difficulty": 0.23333333333333334,
+    "confidence": 0.7666666666666666,
+    "last_seen": 1747215952.831395,
+    "first_seen": 1747215952.831395
+  },
+  "main": {
+    "encounters": 1,
+    "difficulty": 0.13333333333333333,
+    "confidence": 0.8666666666666667,
+    "last_seen": 1747215952.8313978,
+    "first_seen": 1747215952.8313978
+  }
+}

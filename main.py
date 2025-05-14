@@ -198,6 +198,254 @@ SPECIAL_CHAR_REPLACEMENTS = {
     '✘': 'x',
 }
 
+class WordMemory:
+    """Tracks word familiarity and calculates typing confidence scores."""
+    
+    def __init__(self, memory_file="word_memory.json"):
+        self.memory_file = memory_file
+        self.memory = self.load_memory()
+        self.common_words = set([
+          
+            "the", "be", "to", "of", "and", "a", "in", "that", "have", "I", 
+            "it", "for", "not", "on", "with", "he", "as", "you", "do", "at",
+            "this", "but", "his", "by", "from", "they", "we", "say", "her", "she",
+            "or", "an", "will", "my", "one", "all", "would", "there", "their", "what",
+            "so", "up", "out", "if", "about", "who", "get", "which", "go", "me",
+            "when", "make", "can", "like", "time", "no", "just", "him", "know", "take",
+            "people", "into", "year", "your", "good", "some", "could", "them", "see", "other",
+            "than", "then", "now", "look", "only", "come", "its", "over", "think", "also",
+            "back", "after", "use", "two", "how", "our", "work", "first", "well", "way",
+            "even", "new", "want", "because", "any", "these", "give", "day", "most", "us"
+            "is", "was", "are", "had", "word", "were", "said", "each", "many", "write"
+            "long", "thing", "has", "more", "did", "sound", "number", "water", "call", "may"
+            "down", "side", "been", "find", "part", "place", "made", "live", "where", "little"
+            "round", "man", "came", "show", "every", "under", "name", "very", "through", "form"
+            "sentence", "great", "help", "low", "line", "differ", "turn", "cause", "much", "mean"
+            "before", "move", "right", "boy", "old", "too", "same", "tell", "does", "set"
+            "three", "air", "play", "small", "end", "put", "home", "read", "hand", "port"
+            "self", "earth", "father", "head", "stand", "own", "page", "should", "country", "found"
+            "answer", "school", "grow", "study", "still", "learn", "plant", "cover", "food", "sun"
+            "four", "thought", "let", "keep", "eye", "never", "last", "door", "between", "city"
+            "tree", "cross", "since", "hard", "start", "might", "story", "saw", "far", "sea"
+            "draw", "left", "late", "run", "don't", "while", "press", "close", "night", "real"
+            "life", "few", "north", "open", "seem", "together", "next", "white", "children", "begin"   
+            "got", "walk", "example", "ease", "paper", "group", "always", "music", "those", "both"
+            "mark", "often", "letter", "until", "mile", "river", "car", "feet", "care", "second"
+            "book", "carry", "took", "science", "eat", "room", "friend", "began", "idea", "fish"
+            "mountain", "stop", "once", "base", "hear", "horse", "cut", "sure", "watch", "color"
+            "face", "wood", "main"
+
+            
+        ])
+        
+        # Typing difficulty patterns
+        self.difficult_patterns = [
+            "th", "ch", "sh", "wh", "ph", "gh", "ck", "qu", "tion", "sion"
+            "ture", "ible", "able", "ff", "ss", "tt", "pp", "cc", "gg", "dd"
+            "bb", "mn", "gn", "ps", "pt", "rh", "kn", "wr", "mb", "ght"
+            "eigh", "ough", "augh", "tch", "dge", "cei", "sch", "ious"
+
+        ]
+        
+        # Decay settings
+        self.decay_rate = 0.05  # 5% decay per day
+        self.last_save_time = time.time()
+    
+    def load_memory(self):
+        """Load word memory from disk."""
+        try:
+            with open(self.memory_file, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            return {}
+    
+    def save_memory(self):
+        """Save word memory to disk."""
+        # Apply time decay before saving
+        self.apply_time_decay()
+        
+        with open(self.memory_file, "w", encoding="utf-8") as f:
+            json.dump(self.memory, f, indent=2)
+        
+        # Update last save time
+        self.last_save_time = time.time()
+    
+    def apply_time_decay(self):
+        """Apply time decay to confidence scores based on last access."""
+        current_time = time.time()
+        days_since_save = (current_time - self.last_save_time) / (60 * 60 * 24)
+        
+        # Only apply decay if at least a day has passed
+        if days_since_save >= 1:
+            decay_factor = 1.0 - (self.decay_rate * days_since_save)
+            decay_factor = max(0.5, decay_factor)  # Never decay below 50%
+            
+            for word in self.memory:
+                if 'confidence' in self.memory[word]:
+                    self.memory[word]['confidence'] *= decay_factor
+                    # Update last_seen timestamp to maintain recency info
+                    if 'last_seen' in self.memory[word]:
+                        self.memory[word]['last_seen'] = current_time
+    
+    def calculate_difficulty(self, word):
+        """Calculate typing difficulty score for a word (0.0-1.0)."""
+        if not word:
+            return 0.0
+            
+        # Normalize to lowercase for consistency
+        word = word.lower()
+        
+        # Base difficulty starts with length (longer = harder)
+        length_factor = min(len(word) / 12, 1.0)  # Cap at 12 chars
+        
+        # Check for difficult letter combinations
+        pattern_count = 0
+        for pattern in self.difficult_patterns:
+            if pattern in word:
+                pattern_count += 1
+        
+        pattern_factor = min(pattern_count / 3, 1.0)  # Cap at 3 patterns
+        
+        # Check for repeated letters (easier to make mistakes)
+        repeated = 0
+        for i in range(len(word) - 1):
+            if word[i] == word[i+1]:
+                repeated += 1
+        repeated_factor = min(repeated / 2, 1.0)  # Cap at 2 repeats
+        
+        # Calculate final difficulty score (0.0-1.0)
+        difficulty = (length_factor * 0.4) + (pattern_factor * 0.4) + (repeated_factor * 0.2)
+        return min(difficulty, 1.0)  # Ensure it doesn't exceed 1.0
+    
+    def update_word(self, word):
+        """Record a word encounter, updating or creating its memory entry."""
+        if not word or len(word) <= 1:
+            return  # Skip very short words or empty strings
+            
+        # Skip common words unless they're not in our memory yet
+        if word.lower() in self.common_words and word in self.memory:
+            if 'encounters' in self.memory[word]:
+                self.memory[word]['encounters'] += 1
+            return
+            
+        # Initialize new word
+        if word not in self.memory:
+            difficulty = self.calculate_difficulty(word)
+            self.memory[word] = {
+                'encounters': 1,
+                'difficulty': difficulty,
+                'confidence': max(0.2, 1.0 - difficulty),  # Start with inverse of difficulty, min 0.2
+                'last_seen': time.time(),
+                'first_seen': time.time()
+            }
+        else:
+            # Update existing word
+            self.memory[word]['encounters'] += 1
+            self.memory[word]['last_seen'] = time.time()
+            
+            # Increase confidence with diminishing returns
+            if self.memory[word]['encounters'] < 10:
+                confidence_gain = 0.1
+            elif self.memory[word]['encounters'] < 20:
+                confidence_gain = 0.05
+            else:
+                confidence_gain = 0.02
+                
+            # Apply confidence increase, capped at 0.95 for non-common words
+            new_confidence = self.memory[word]['confidence'] + confidence_gain
+            self.memory[word]['confidence'] = min(0.95, new_confidence)
+    
+    def update_text(self, text):
+        """Process a text sample, updating memory for each word."""
+        if not text:
+            return
+            
+        # Simple word tokenization (can be enhanced)
+        words = text.split()
+        for word in words:
+            # Clean up the word
+            clean_word = word.strip().strip('.,!?:;()[]{}"\'-')
+            if clean_word:
+                self.update_word(clean_word)
+    
+    def get_typing_params(self, word):
+        """Get typing parameters for a word based on confidence score."""
+        if not word or len(word) <= 1:
+            return {
+                'error_prob': 0.0,    # Probability of making a typo
+                'pause_prob': 0.0,    # Probability of pausing before typing
+                'pause_time': 0.0     # Pause duration if pausing (seconds)
+            }
+            
+        # For common words, we're always confident
+        if word.lower() in self.common_words:
+            return {
+                'error_prob': 0.005,  # Very low error chance on common words
+                'pause_prob': 0.0,    # No pausing on common words
+                'pause_time': 0.0
+            }
+            
+        # For words not in memory, use difficulty calculation
+        if word not in self.memory:
+            difficulty = self.calculate_difficulty(word)
+            return {
+                'error_prob': min(0.15, difficulty * 0.2),
+                'pause_prob': min(0.3, difficulty * 0.4),
+                'pause_time': min(0.5, difficulty * 0.6)
+            }
+            
+        # Use stored confidence
+        confidence = self.memory[word].get('confidence', 0.5)
+        difficulty = self.memory[word].get('difficulty', 0.5)
+        
+        # Calculate error and pause probabilities inversely to confidence
+        error_prob = max(0.005, (1.0 - confidence) * 0.15)  # More confident = fewer errors
+        pause_prob = max(0.0, (1.0 - confidence) * 0.3)     # More confident = fewer pauses
+        pause_time = max(0.1, (1.0 - confidence) * 0.6)     # Longer pauses when less confident
+        
+        return {
+            'error_prob': error_prob,
+            'pause_prob': pause_prob,
+            'pause_time': pause_time
+        }
+    
+    def get_words_by_confidence(self, threshold=0.5, limit=20):
+        """Get words with confidence below a certain threshold."""
+        result = []
+        for word, data in self.memory.items():
+            if 'confidence' in data and data['confidence'] < threshold:
+                result.append((word, data['confidence'], data.get('encounters', 0)))
+        
+        # Sort by confidence (ascending)
+        result.sort(key=lambda x: x[1])
+        return result[:limit]
+    
+    def get_stats(self):
+        """Get statistics about the word memory."""
+        total_words = len(self.memory)
+        total_encounters = sum(data.get('encounters', 0) for data in self.memory.values())
+        
+        confidence_levels = {
+            'low': 0,      # 0.0-0.3
+            'medium': 0,   # 0.3-0.7
+            'high': 0,     # 0.7-1.0
+        }
+        
+        for data in self.memory.values():
+            if 'confidence' in data:
+                if data['confidence'] < 0.3:
+                    confidence_levels['low'] += 1
+                elif data['confidence'] < 0.7:
+                    confidence_levels['medium'] += 1
+                else:
+                    confidence_levels['high'] += 1
+        
+        return {
+            'total_words': total_words,
+            'total_encounters': total_encounters,
+            'confidence_levels': confidence_levels
+        }
+
 keyboard_neighbors = {
     'a': ['s', 'q', 'z'],        'b': ['v', 'g', 'h', 'n'],
     'c': ['x', 'd', 'f', 'v'],   'd': ['s', 'e', 'r', 'f', 'c', 'x'],
@@ -1021,9 +1269,10 @@ class TypingThread(QThread):
     progress = pyqtSignal(int)
     finished = pyqtSignal()
     error = pyqtSignal(str)
+    word_learned = pyqtSignal(str, float)  # Signal to emit when confidence in a word changes
     
     def __init__(self, text, delay, error_rate, punc_pause_prob, space_pause_prob, thinking_pause_prob, 
-                 background_mode, notepad_mode=False):
+                 background_mode, notepad_mode=False, word_memory=None):
         super().__init__()
         self.text = text
         self.delay = delay
@@ -1035,7 +1284,46 @@ class TypingThread(QThread):
         self.notepad_mode = notepad_mode
         self.running = True
         self.target_window = None
+        self.word_memory = word_memory  # Instance of WordMemory class
         
+        # Update word memory with the text to be typed (gives bot a "preview")
+        if self.word_memory:
+            self.word_memory.update_text(text)
+    
+    def extract_current_word(self, text, pos):
+        """Extract the current word at position in text."""
+        if not text or pos >= len(text):
+            return ""
+        
+        # Find word boundaries (space, punctuation, etc.)
+        word_start = pos
+        while word_start > 0 and text[word_start-1].isalnum():
+            word_start -= 1
+        
+        word_end = pos
+        while word_end < len(text) and text[word_end].isalnum():
+            word_end += 1
+        
+        return text[word_start:word_end]
+    
+    def get_word_specific_typing_params(self, word, base_error_rate):
+        """Get word-specific typing parameters based on confidence."""
+        if not word or not self.word_memory:
+            return {
+                'error_prob': base_error_rate,
+                'pause_prob': 0.0,
+                'pause_time': 0.0
+            }
+        
+        # Get parameters from word memory
+        params = self.word_memory.get_typing_params(word)
+        
+        # Blend with base error rate (adjust weight based on what feels most natural)
+        # Here we're doing 60% word-specific, 40% global error rate
+        params['error_prob'] = (params['error_prob'] * 0.6) + (base_error_rate * 0.4)
+        
+        return params
+    
     def run(self):
         try:
             self.error.emit("👆 Click in the target window now...")
@@ -1061,6 +1349,7 @@ class TypingThread(QThread):
             notepad_status = "enabled" if self.notepad_mode else "disabled"
             self.error.emit(f"✅ Typing into: {self.target_title} (Background: {bg_status}, Notepad: {notepad_status})")
             self.error.emit("ℹ️ Special character normalization active (curly quotes → straight quotes, em dashes → hyphens, etc.)")
+            self.error.emit("🧠 Word-specific confidence scoring active (pauses and error rates adapt to word familiarity)")
             
             # Create direct typer
             typer = DirectWindowTyper(self.target_window, self.background_mode, self.notepad_mode)
@@ -1093,11 +1382,14 @@ class TypingThread(QThread):
             total = len(self.text)
             i = 0
             current_line_indent = ''
+            current_word = ""
+            word_typing_params = {}
             
             # Add rate limiting
             char_count = 0
             last_reset = time.time()
             last_focus_check = time.time()
+            words_typed = set()  # Track words we've fully typed
             
             while i < total and self.running:
                 try:
@@ -1126,6 +1418,14 @@ class TypingThread(QThread):
                         last_focus_check = now
 
                     ch = self.text[i]
+                    
+                    # Update current word and word-specific typing parameters when on a word boundary
+                    if i == 0 or not self.text[i-1].isalnum():
+                        current_word = self.extract_current_word(self.text, i)
+                        if current_word:
+                            word_typing_params = self.get_word_specific_typing_params(current_word, self.error_rate)
+                        else:
+                            word_typing_params = {'error_prob': self.error_rate, 'pause_prob': 0.0, 'pause_time': 0.0}
                     
                     # autotab logic
                     if ch == '\n':
@@ -1167,9 +1467,12 @@ class TypingThread(QThread):
                         self.progress.emit(int((i / total) * 100))
                         continue
 
-                    # typo?
-                    if ch.isalnum() and random.random() < self.error_rate:
+                    # Word-specific typo probability instead of global error rate
+                    # Use word_typing_params['error_prob'] 
+                    make_typo = False
+                    if ch.isalnum() and random.random() < word_typing_params.get('error_prob', self.error_rate):
                         if (nb := keyboard_neighbors.get(ch, [])):
+                            make_typo = True
                             typo = random.choice(nb)
                             if not typer.type_char(typo):
                                 self.error.emit("Failed to type typo character. Checking window focus...")
@@ -1183,7 +1486,21 @@ class TypingThread(QThread):
                                     self.error.emit("Lost focus and could not refocus. Aborting.")
                                     break
                             time.sleep(self.delay)
-                            
+                    
+                    # Word-specific pausing before typing a difficult word
+                    if current_word and current_word not in words_typed and random.random() < word_typing_params.get('pause_prob', 0.0):
+                        self.error.emit(f"Pausing at '{current_word}': {word_typing_params.get('pause_time', 0.2):.1f}s")
+                        time.sleep(word_typing_params.get('pause_time', 0.2))
+                        words_typed.add(current_word)
+                        
+                        # Record that we've typed this word
+                        if self.word_memory and current_word:
+                            self.word_memory.update_word(current_word)
+                            # If the word was typed correctly (no typo), emit signal
+                            if not make_typo and current_word in self.word_memory.memory:
+                                confidence = self.word_memory.memory[current_word].get('confidence', 0.0)
+                                self.word_learned.emit(current_word, confidence)
+                    
                     # type or emoji-paste
                     if emoji.is_emoji(ch):
                         # Emoji needs special handling - use paste
@@ -1222,6 +1539,13 @@ class TypingThread(QThread):
                     continue
             
             self.progress.emit(0)
+            
+            # Save the word memory at the end of typing
+            if self.word_memory:
+                self.word_memory.save_memory()
+                stats = self.word_memory.get_stats()
+                self.error.emit(f"Memory stats: {stats['total_words']} words, {stats['total_encounters']} total encounters")
+            
             self.finished.emit()
             
             # At the end of typing, show diagnostics if there were any issues
@@ -1437,8 +1761,8 @@ class TypingBot(QMainWindow):
         self.setWindowTitle("Eyetype4You Bot")
         self.setGeometry(100, 100, 800, 600)
         
-        # Load memory
-        self.word_memory = self.load_memory()
+        # Create WordMemory instance
+        self.word_memory = WordMemory("word_memory.json")
         
         # Typing parameters
         self.error_rate = 1/83
@@ -1464,93 +1788,10 @@ class TypingBot(QMainWindow):
         # Show splash screen
         splash = SplashScreen(self)
         splash.exec_()
-    
-    def setup_ui(self):
-        # Bot image with reference
-        self.eye_label = QLabel()
-        self.eye_label.setAlignment(Qt.AlignCenter)
-        try:
-            pixmap = QPixmap("assets/eyes.png").scaled(175, 175, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            self.eye_label.setPixmap(pixmap)
-        except:
-            # Fallback if image is missing
-            self.eye_label.setText("👁️ 👁️")
-            self.eye_label.setStyleSheet("font-size: 64px;")
         
-        # Control buttons with tooltips
-        button_layout = QHBoxLayout()
-        
-        self.start_button = QPushButton("▶️ Start Typing")
-        self.start_button.setFixedSize(140, 50)
-        self.start_button.setToolTip("Click to begin typing your text.<br>You'll have 4 seconds to focus on your target window.")
-        self.start_button.clicked.connect(self.start_typing)
-        
-        self.close_button = QPushButton("✖ Close")
-        self.close_button.setObjectName("closeButton")
-        self.close_button.setFixedSize(140, 50)
-        self.close_button.setFont(QFont("Segoe UI", 14, QFont.Bold))
-        self.close_button.clicked.connect(self.close)
-        
-        # Background mode checkbox
-        self.background_mode_check = QCheckBox("Background Typing Mode")
-        self.background_mode_check.setToolTip("When enabled, typing continues in the target window<br>even if you're working in other windows.")
-        
-        # Notepad mode checkbox
-        self.notepad_mode_check = QCheckBox("Notepad/Text Editor Mode")
-        self.notepad_mode_check.setToolTip("Enable this when typing into Notepad, Notepad++, or other text editors.<br>Uses special methods that work better with these applications.")
-        
-        # Progress bar with percentage label
-        progress_layout = QVBoxLayout()
-        self.progress_bar = QProgressBar()
-        self.progress_bar.setFixedSize(80, 15)
-        self.progress_bar.setValue(0)
-        
-        self.progress_label = QLabel("0%")
-        self.progress_label.setAlignment(Qt.AlignCenter)
-        
-        progress_layout.addWidget(self.progress_bar)
-        progress_layout.addWidget(self.progress_label)
-        progress_layout.setAlignment(Qt.AlignCenter)
-        
-        # Status indicator
-        self.status_indicator = StatusIndicator(self)
-        
-        # Main content layout
-        content_layout = QHBoxLayout()
-        
-        # Text edit area with placeholder and autocorrect
-        self.text_edit = AutoCorrectTextEdit(self)
-        self.text_edit.setPlaceholderText("Enter text to type...\n\nTip: You can include emoji like 😊 👍 ⭐\n\nAutocorrect is enabled - common misspellings will be fixed as you type!")
-        
-        # Quick templates sidebar
-        self.templates_widget = QuickTemplate(self)
-        self.templates_widget.template_selected.connect(self.insert_template)
-        
-        content_layout.addWidget(self.text_edit, 3)
-        content_layout.addWidget(self.templates_widget, 1)
-        
-        # Add everything to main layout
-        self.main_layout.addWidget(self.eye_label)
-        
-        # Put buttons and checkbox in same row
-        controls_row = QHBoxLayout()
-        controls_row.addWidget(self.start_button)
-        
-        # Stack checkboxes vertically in a container
-        checkbox_layout = QVBoxLayout()
-        checkbox_layout.addWidget(self.background_mode_check)
-        checkbox_layout.addWidget(self.notepad_mode_check)
-        checkbox_container = QWidget()
-        checkbox_container.setLayout(checkbox_layout)
-        
-        controls_row.addWidget(checkbox_container)
-        controls_row.addWidget(self.close_button)
-        controls_row.addStretch()
-        controls_row.addLayout(progress_layout)
-        
-        self.main_layout.addLayout(controls_row)
-        self.main_layout.addWidget(self.status_indicator)
-        self.main_layout.addLayout(content_layout)
+        # Load memory stats and log
+        stats = self.word_memory.get_stats()
+        print(f"Loaded word memory: {stats['total_words']} words")
     
     def setup_menu(self):
         menubar = self.menuBar()
@@ -1642,6 +1883,241 @@ class TypingBot(QMainWindow):
             theme_cyberpunk.setChecked(True)
         else:
             theme_pink.setChecked(True)
+            
+        # Add word memory menu
+        self.add_word_memory_menu()
+    
+    def add_word_memory_menu(self):
+        """Add a word memory menu to settings"""
+        # Add to existing menu setup
+        menubar = self.menuBar()
+        memory_menu = menubar.addMenu("🧠 Word Memory")
+        
+        # Add actions
+        view_stats = QAction("View Statistics", self)
+        view_stats.triggered.connect(self.show_memory_stats)
+        
+        view_difficult = QAction("View Difficult Words", self)
+        view_difficult.triggered.connect(self.show_difficult_words)
+        
+        reset_memory = QAction("Reset Memory", self)
+        reset_memory.triggered.connect(self.reset_memory)
+        
+        memory_menu.addAction(view_stats)
+        memory_menu.addAction(view_difficult)
+        memory_menu.addSeparator()
+        memory_menu.addAction(reset_memory)
+    
+    def show_memory_stats(self):
+        """Show word memory statistics"""
+        stats = self.word_memory.get_stats()
+        confidence_levels = stats['confidence_levels']
+        
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Word Memory Statistics")
+        dialog.setFixedSize(400, 300)
+        
+        layout = QVBoxLayout(dialog)
+        
+        # Stats labels
+        title = QLabel("Your Typing Memory Stats")
+        title.setObjectName("titleLabel")
+        title.setAlignment(Qt.AlignCenter)
+        
+        total_words = QLabel(f"Total Words: {stats['total_words']}")
+        total_encounters = QLabel(f"Total Encounters: {stats['total_encounters']}")
+        
+        # Confidence level breakdown
+        confidence_title = QLabel("Confidence Levels:")
+        confidence_title.setStyleSheet("font-weight: bold;")
+        
+        low_conf = QLabel(f"Low Confidence (0-30%): {confidence_levels['low']} words")
+        med_conf = QLabel(f"Medium Confidence (30-70%): {confidence_levels['medium']} words")
+        high_conf = QLabel(f"High Confidence (70-100%): {confidence_levels['high']} words")
+        
+        # Add explanation
+        explanation = QLabel("As you type, the bot learns which words you use frequently and "
+                           "becomes more confident typing them. Words with higher confidence "
+                           "are typed with fewer errors and pauses.")
+        explanation.setWordWrap(True)
+        
+        # Add all to layout
+        layout.addWidget(title)
+        layout.addWidget(total_words)
+        layout.addWidget(total_encounters)
+        layout.addWidget(confidence_title)
+        layout.addWidget(low_conf)
+        layout.addWidget(med_conf)
+        layout.addWidget(high_conf)
+        layout.addWidget(explanation)
+        
+        # Close button
+        close_btn = QPushButton("Close")
+        close_btn.clicked.connect(dialog.accept)
+        layout.addWidget(close_btn, alignment=Qt.AlignCenter)
+        
+        dialog.exec_()
+    
+    def show_difficult_words(self):
+        """Show words with low confidence scores"""
+        difficult_words = self.word_memory.get_words_by_confidence(threshold=0.5, limit=20)
+        
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Difficult Words")
+        dialog.setFixedSize(400, 400)
+        
+        layout = QVBoxLayout(dialog)
+        
+        title = QLabel("Words You Find Difficult")
+        title.setObjectName("titleLabel")
+        title.setAlignment(Qt.AlignCenter)
+        layout.addWidget(title)
+        
+        if not difficult_words:
+            no_words = QLabel("No difficult words found in memory yet.\nKeep typing to build up your word memory!")
+            no_words.setAlignment(Qt.AlignCenter)
+            layout.addWidget(no_words)
+        else:
+            # Table-like display with word, confidence, and encounter count
+            word_list = QTextEdit()
+            word_list.setReadOnly(True)
+            
+            # Create table header
+            table = "Word\tConfidence\tEncounters\n"
+            table += "-" * 40 + "\n"
+            
+            # Add each word
+            for word, confidence, encounters in difficult_words:
+                table += f"{word}\t{confidence:.2f}\t{encounters}\n"
+                
+            word_list.setText(table)
+            layout.addWidget(word_list)
+            
+            # Add explanation
+            explanation = QLabel("These are words the bot finds difficult to type. The more "
+                                "you use these words, the more confident the bot will become "
+                                "typing them, leading to fewer errors and pauses.")
+            explanation.setWordWrap(True)
+            layout.addWidget(explanation)
+        
+        # Close button
+        close_btn = QPushButton("Close")
+        close_btn.clicked.connect(dialog.accept)
+        layout.addWidget(close_btn, alignment=Qt.AlignCenter)
+        
+        dialog.exec_()
+    
+    def reset_memory(self):
+        """Reset the word memory after confirmation"""
+        confirm = QMessageBox.question(
+            self, "Confirm Reset", 
+            "Are you sure you want to reset your word memory?\nThis will erase all learning progress.",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+        
+        if confirm == QMessageBox.Yes:
+            # Create empty memory
+            with open(self.word_memory.memory_file, "w", encoding="utf-8") as f:
+                f.write("{}")
+            
+            # Reload memory
+            self.word_memory = WordMemory(self.word_memory.memory_file)
+            
+            QMessageBox.information(self, "Memory Reset", "Word memory has been reset successfully.")
+    
+    def handle_word_learned(self, word, confidence):
+        """Handle signal when a word's confidence has changed"""
+        # This could be used to update UI or show notifications
+        # For now, just log it
+        print(f"Learned word: {word} - Confidence: {confidence:.2f}")
+    
+    def setup_ui(self):
+        # Bot image with reference
+        self.eye_label = QLabel()
+        self.eye_label.setAlignment(Qt.AlignCenter)
+        try:
+            pixmap = QPixmap("assets/eyes.png").scaled(175, 175, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.eye_label.setPixmap(pixmap)
+        except:
+            # Fallback if image is missing
+            self.eye_label.setText("👁️ 👁️")
+            self.eye_label.setStyleSheet("font-size: 64px;")
+        
+        # Control buttons with tooltips
+        button_layout = QHBoxLayout()
+        
+        self.start_button = QPushButton("▶️ Start Typing")
+        self.start_button.setFixedSize(140, 50)
+        self.start_button.setToolTip("Click to begin typing your text.<br>You'll have 4 seconds to focus on your target window.")
+        self.start_button.clicked.connect(self.start_typing)
+        
+        self.close_button = QPushButton("✖ Close")
+        self.close_button.setObjectName("closeButton")
+        self.close_button.setFixedSize(140, 50)
+        self.close_button.setFont(QFont("Segoe UI", 14, QFont.Bold))
+        self.close_button.clicked.connect(self.close)
+        
+        # Background mode checkbox
+        self.background_mode_check = QCheckBox("Background Typing Mode")
+        self.background_mode_check.setToolTip("When enabled, typing continues in the target window<br>even if you're working in other windows.")
+        
+        # Notepad mode checkbox
+        self.notepad_mode_check = QCheckBox("Notepad/Text Editor Mode")
+        self.notepad_mode_check.setToolTip("Enable this when typing into Notepad, Notepad++, or other text editors.<br>Uses special methods that work better with these applications.")
+        
+        # Progress bar with percentage label
+        progress_layout = QVBoxLayout()
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setFixedSize(80, 15)
+        self.progress_bar.setValue(0)
+        
+        self.progress_label = QLabel("0%")
+        self.progress_label.setAlignment(Qt.AlignCenter)
+        
+        progress_layout.addWidget(self.progress_bar)
+        progress_layout.addWidget(self.progress_label)
+        progress_layout.setAlignment(Qt.AlignCenter)
+        
+        # Status indicator
+        self.status_indicator = StatusIndicator(self)
+        
+        # Main content layout
+        content_layout = QHBoxLayout()
+        
+        # Text edit area with placeholder and autocorrect
+        self.text_edit = AutoCorrectTextEdit(self)
+        self.text_edit.setPlaceholderText("Enter text to type...\n\nTip: You can include emoji like 😊 👍 ⭐\n\nAutocorrect is enabled - common misspellings will be fixed as you type!")
+        
+        # Quick templates sidebar
+        self.templates_widget = QuickTemplate(self)
+        self.templates_widget.template_selected.connect(self.insert_template)
+        
+        content_layout.addWidget(self.text_edit, 3)
+        content_layout.addWidget(self.templates_widget, 1)
+        
+        # Add everything to main layout
+        self.main_layout.addWidget(self.eye_label)
+        
+        # Put buttons and checkbox in same row
+        controls_row = QHBoxLayout()
+        controls_row.addWidget(self.start_button)
+        
+        # Stack checkboxes vertically in a container
+        checkbox_layout = QVBoxLayout()
+        checkbox_layout.addWidget(self.background_mode_check)
+        checkbox_layout.addWidget(self.notepad_mode_check)
+        checkbox_container = QWidget()
+        checkbox_container.setLayout(checkbox_layout)
+        
+        controls_row.addWidget(checkbox_container)
+        controls_row.addWidget(self.close_button)
+        controls_row.addStretch()
+        controls_row.addLayout(progress_layout)
+        
+        self.main_layout.addLayout(controls_row)
+        self.main_layout.addWidget(self.status_indicator)
+        self.main_layout.addLayout(content_layout)
     
     def insert_template(self, template_text):
         """Insert template text at cursor position"""
@@ -1736,11 +2212,13 @@ class TypingBot(QMainWindow):
             self.punc_pause_prob, self.space_pause_prob, 
             self.thinking_pause_prob,
             background_mode,
-            notepad_mode
+            notepad_mode,
+            word_memory=self.word_memory  # Pass WordMemory instance to thread
         )
         self.typing_thread.progress.connect(self.update_progress)
         self.typing_thread.finished.connect(self.typing_finished)
         self.typing_thread.error.connect(self.handle_typing_error)
+        self.typing_thread.word_learned.connect(self.handle_word_learned)
         self.typing_thread.start()
     
     def handle_typing_error(self, error_msg):
@@ -1759,8 +2237,20 @@ class TypingBot(QMainWindow):
         self.progress_bar.setValue(0)
         self.progress_label.setText("0%")
         self.show_popup("Done", "Typing complete!")
-        self.save_memory()
-
+        
+        # Save memory
+        self.word_memory.save_memory()
+        
+        # Show memory stats in popup
+        stats = self.word_memory.get_stats()
+        confidence_levels = stats['confidence_levels']
+        memory_msg = (f"Words in memory: {stats['total_words']}\n"
+                     f"Low confidence: {confidence_levels['low']}\n"
+                     f"Medium confidence: {confidence_levels['medium']}\n"
+                     f"High confidence: {confidence_levels['high']}")
+        
+        self.show_popup("Memory Stats", memory_msg)
+    
     def toggle_autocorrect(self, checked):
         """Toggle autocorrect functionality"""
         if hasattr(self, 'text_edit') and isinstance(self.text_edit, AutoCorrectTextEdit):
@@ -1865,10 +2355,19 @@ class TypingBot(QMainWindow):
         dialog.accept()
     
     def closeEvent(self, event):
+        # Save word memory before closing
+        if hasattr(self, 'word_memory'):
+            self.word_memory.save_memory()
+            
         if self.typing_thread and self.typing_thread.isRunning():
             self.typing_thread.stop()
             self.typing_thread.wait()
         event.accept()
+    
+    def update_word_memory(self, word, confidence):
+        """Update word memory based on new confidence"""
+        if self.word_memory:
+            self.word_memory.update_word(word, confidence)
 
 class PopupDialog(QDialog):
     def __init__(self, parent, title, message, kind="info"):
