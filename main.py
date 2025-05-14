@@ -86,6 +86,118 @@ AUTOCORRECT_DICT = {
     "rigth": "right",
 }
 
+# Special character replacements - maps fancy characters to standard equivalents
+SPECIAL_CHAR_REPLACEMENTS = {
+    # Smart quotes and apostrophes
+    ''': "'",    # Left single quote
+    ''': "'",    # Right single quote
+    '"': '"',    # Left double quote
+    '"': '"',    # Right double quote
+    '‚': ',',    # Single low-9 quotation mark
+    '„': '"',    # Double low-9 quotation mark
+    
+    # Dashes and hyphens
+    '–': '-',    # En dash
+    '—': '--',   # Em dash
+    '−': '-',    # Minus sign
+    '‐': '-',    # Hyphen
+    '‑': '-',    # Non-breaking hyphen
+    '‒': '-',    # Figure dash
+    '⁃': '-',    # Hyphen bullet
+    
+    # Spaces
+    ' ': ' ',    # Non-breaking space
+    '  ': ' ',   # En space
+    '   ': ' ',  # Em space
+    
+    # Fractions
+    '½': '1/2',
+    '⅓': '1/3',
+    '⅔': '2/3',
+    '¼': '1/4',
+    '¾': '3/4',
+    '⅕': '1/5',
+    '⅖': '2/5',
+    '⅗': '3/5',
+    '⅘': '4/5',
+    '⅙': '1/6',
+    '⅚': '5/6',
+    '⅛': '1/8',
+    '⅜': '3/8',
+    '⅝': '5/8',
+    '⅞': '7/8',
+    
+    # Arrows
+    '←': '<-',
+    '→': '->',
+    '↑': '^',
+    '↓': 'v',
+    '↔': '<->',
+    '⇐': '<=',
+    '⇒': '=>',
+    '⇑': '=>',
+    '⇓': '=>',
+    '⇔': '<=>',
+    
+    # Mathematical symbols
+    '×': 'x',
+    '÷': '/',
+    '±': '+/-',
+    '∞': 'infinity',
+    '≈': '~=',
+    '≠': '!=',
+    '≤': '<=',
+    '≥': '>=',
+    '∑': 'sum',
+    '∏': 'product',
+    '∂': 'd',
+    '∫': 'integral',
+    '∆': 'delta',
+    '∇': 'nabla',
+    '√': 'sqrt',
+    '∛': 'cbrt',
+    '∝': 'proportional to',
+    '∩': 'intersection',
+    '∪': 'union',
+    '∈': 'in',
+    '∉': 'not in',
+    '∅': 'empty set',
+    '∀': 'for all',
+    '∃': 'there exists',
+    '∄': 'there does not exist',
+    '∵': 'because',
+    '∴': 'therefore',
+    
+    # Currency symbols
+    '€': 'EUR',
+    '£': 'GBP',
+    '¥': 'JPY',
+    '₹': 'INR',
+    '₽': 'RUB',
+    '¢': 'cents',
+    
+    # Other symbols
+    '©': '(c)',
+    '®': '(R)',
+    '™': '(TM)',
+    '°': ' degrees',
+    '•': '*',
+    '·': '-',
+    '…': '...',
+    '℅': 'c/o',
+    '℃': 'C',
+    '℉': 'F',
+    '№': 'No.',
+    '℗': '(P)',
+    '℠': '(SM)',
+    '✓': 'check',
+    '✔': 'check',
+    '✕': 'x',
+    '✖': 'x',
+    '✗': 'x',
+    '✘': 'x',
+}
+
 keyboard_neighbors = {
     'a': ['s', 'q', 'z'],        'b': ['v', 'g', 'h', 'n'],
     'c': ['x', 'd', 'f', 'v'],   'd': ['s', 'e', 'r', 'f', 'c', 'x'],
@@ -634,6 +746,10 @@ class DirectWindowTyper:
             "pyautogui": 0
         }
     
+    def normalize_special_char(self, char):
+        """Replace special characters with standard equivalents"""
+        return SPECIAL_CHAR_REPLACEMENTS.get(char, char)
+    
     def ensure_window_focus(self):
         """Make sure the target window has focus if not in background mode"""
         if not user32.IsWindow(self.hwnd):
@@ -743,26 +859,33 @@ class DirectWindowTyper:
         if not user32.IsWindow(self.hwnd):
             return False
             
+        # Normalize special characters that may not be supported by all applications
+        normalized_char = self.normalize_special_char(char)
+        
+        # If the character was normalized to multiple characters, handle as a string
+        if len(normalized_char) > 1 and normalized_char != char:
+            return self.type_string(normalized_char, 0.01)  # Small delay between chars
+            
         # If in background mode, try direct message first
         if self.background_mode:
             # Try SendMessage first
-            if self.try_direct_message(char, "send"):
+            if self.try_direct_message(normalized_char, "send"):
                 self.method_success_count["direct_send"] += 1
                 self.last_method_used = "direct_send"
                 return True
                 
             # Try PostMessage next
-            if self.try_direct_message(char, "post"):
+            if self.try_direct_message(normalized_char, "post"):
                 self.method_success_count["direct_post"] += 1
                 self.last_method_used = "direct_post"
                 return True
                 
             # If both direct methods fail, fall back to pyautogui with focus
             if self.ensure_window_focus():
-                if char == '\b':  # backspace
+                if normalized_char == '\b':  # backspace
                     pyautogui.press('backspace')
                 else:
-                    pyautogui.typewrite(char)
+                    pyautogui.typewrite(normalized_char)
                 self.method_success_count["pyautogui"] += 1
                 self.last_method_used = "pyautogui"
                 return True
@@ -774,10 +897,10 @@ class DirectWindowTyper:
                 # Failed to give focus to target window
                 return False
             
-            if char == '\b':  # backspace
+            if normalized_char == '\b':  # backspace
                 pyautogui.press('backspace')
             else:
-                pyautogui.typewrite(char)
+                pyautogui.typewrite(normalized_char)
             
             self.method_success_count["pyautogui"] += 1
             self.last_method_used = "pyautogui"
@@ -811,12 +934,17 @@ class DirectWindowTyper:
         if not text or not user32.IsWindow(self.hwnd):
             return False
             
+        # Normalize special characters in text
+        normalized_text = ""
+        for char in text:
+            normalized_text += self.normalize_special_char(char)
+        
         # Save original clipboard content
         original_clipboard = pyperclip.paste()
         
         try:
             # Set clipboard to desired text
-            pyperclip.copy(text)
+            pyperclip.copy(normalized_text)
             
             if self.background_mode:
                 # Try different approaches to paste
@@ -932,6 +1060,7 @@ class TypingThread(QThread):
             bg_status = "enabled" if self.background_mode else "disabled"
             notepad_status = "enabled" if self.notepad_mode else "disabled"
             self.error.emit(f"✅ Typing into: {self.target_title} (Background: {bg_status}, Notepad: {notepad_status})")
+            self.error.emit("ℹ️ Special character normalization active (curly quotes → straight quotes, em dashes → hyphens, etc.)")
             
             # Create direct typer
             typer = DirectWindowTyper(self.target_window, self.background_mode, self.notepad_mode)
