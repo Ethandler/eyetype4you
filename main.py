@@ -8,6 +8,7 @@ import pyautogui
 import pyperclip
 import ctypes
 from typing import Dict, List
+# Testing file edit
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, 
                            QPushButton, QLabel, QSlider, QTextEdit, QFrame, QCheckBox,
                            QDialog, QMenu, QAction, QMenuBar, QProgressBar, QMessageBox, QToolTip,
@@ -82,7 +83,7 @@ keyboard_neighbors = {
     'g': ['f', 't', 'y', 'h', 'b', 'v'], 'h': ['g', 'y', 'u', 'j', 'n', 'b'],
     'i': ['u', 'j', 'k', 'o'],   'j': ['h', 'u', 'i', 'k', 'm', 'n'],
     'k': ['j', 'i', 'o', 'l', ',', 'm'], 'l': ['k', 'o', 'p', ';', '.', ','],
-    'm': ['n', 'j', 'k', ','],   'n': ['b', 'h', 'j', 'm'],
+    'm': ['n', 'j', 'k', '<'],   'n': ['b', 'h', 'j', 'm'],
     'o': ['i', 'k', 'l', 'p'],   'p': ['o', 'l', ';', '['],
     'q': ['a', 's', 'w'],        'r': ['e', 'd', 'f', 't'],
     's': ['a', 'w', 'e', 'd', 'x', 'z'], 't': ['r', 'f', 'g', 'y'],
@@ -473,44 +474,128 @@ class AutoCorrectTextEdit(QTextEdit):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.autocorrect_enabled = True
-        self.last_word = ""
         self.textChanged.connect(self.check_for_correction)
+        # Track sentence endings for auto-capitalization
+        self.last_char_was_sentence_end = True  # Start of document is sentence end
         
     def toggle_autocorrect(self, enabled):
         """Enable or disable autocorrect"""
         self.autocorrect_enabled = enabled
     
+    def keyPressEvent(self, event):
+        """Override to track sentence endings and potentially auto-capitalize"""
+        # Check for auto-capitalization
+        if self.autocorrect_enabled and event.text() == " ":
+            cursor = self.textCursor()
+            pos = cursor.position()
+            doc = self.document()
+            text = doc.toPlainText()
+            
+            # Auto-capitalize standalone i to I
+            if pos >= 2 and text[pos-2:pos] == "i ":
+                # Check if i is standalone (surrounded by spaces or at start)
+                if pos == 2 or text[pos-3] in " \n\t":
+                    cursor.setPosition(pos-2)
+                    cursor.movePosition(QTextCursor.Right, QTextCursor.KeepAnchor, 1)
+                    cursor.insertText("I")
+                    # No need to reset cursor, it maintains position after edit
+                    
+        # Call base method to handle the key normally
+        super().keyPressEvent(event)
+        
+        # After handling key, update sentence tracking
+        if event.text() in ".!?":
+            self.last_char_was_sentence_end = True
+        elif self.last_char_was_sentence_end and event.text().strip():
+            # Auto-capitalize first letter of sentences
+            # First letter after sentence end that isn't whitespace
+            if event.text().islower():
+                cursor = self.textCursor()
+                cursor.movePosition(QTextCursor.Left, QTextCursor.KeepAnchor, 1)
+                cursor.insertText(event.text().upper())
+            self.last_char_was_sentence_end = False
+    
     def check_for_correction(self):
-        """Check if the last word typed needs correction"""
         if not self.autocorrect_enabled:
             return
-            
+
         cursor = self.textCursor()
-        current_pos_before_space = cursor.position() # Position where space was typed
+        # Use document().toPlainText() for a stable view of text, cursor.position() for current pos
+        current_doc_text = self.document().toPlainText() 
+        cursor_pos = cursor.position()
 
-        # Check if the character just typed is a space or common punctuation that ends a word
-        cursor.movePosition(QTextCursor.Left, QTextCursor.KeepAnchor, 1)
-        last_char_typed = cursor.selectedText()
-        cursor.clearSelection() # Reset selection
+        if cursor_pos == 0: # Nothing to check if cursor is at the beginning
+            return
 
-        if last_char_typed in [" ", ".", ",", "!", "?", ";", "\n"]:
-            # Move cursor to the end of the potential word (before the space/punctuation)
-            check_cursor = self.textCursor()
-            check_cursor.setPosition(current_pos_before_space -1) # Position before the space/punct
+        # The character just typed is at cursor_pos - 1
+        last_char_typed = current_doc_text[cursor_pos - 1]
+
+        # Define word delimiters that trigger the autocorrection check
+        delimiters = {" ", ".", ",", "!", "?", ";", "\n", "\t"}
+
+        if last_char_typed in delimiters:
+            # Find the start of the word that precedes the delimiter
+            # Search backwards from the character *before* the delimiter (cursor_pos - 2)
+            search_end_idx = cursor_pos - 2 
+            start_of_word_idx = -1
+
+            for i in range(search_end_idx, -1, -1):
+                if current_doc_text[i] in delimiters:
+                    start_of_word_idx = i + 1 # Word starts after this delimiter
+                    break
+            else: # Loop finished without break, means no delimiter found before this word
+                if search_end_idx >=0 : # Only if there were characters to form a word
+                    start_of_word_idx = 0 # Word starts at the beginning of the text
             
-            check_cursor.select(QTextCursor.WordUnderCursor) # Selects the word the cursor is at/after
-            word_to_check = check_cursor.selectedText()
-            
-            # Clean the word (e.g. if select captures punctuation with it)
-            cleaned_word = word_to_check.strip(".,;:!?\"'()[]{}").lower()
+            # Ensure a valid word was found (start_of_word_idx is valid and before or at search_end_idx)
+            if start_of_word_idx != -1 and start_of_word_idx <= search_end_idx:
+                # Extract the original word as it appears in the text_edit (end index for slice is exclusive)
+                original_word_in_doc = current_doc_text[start_of_word_idx : cursor_pos -1]
 
-            if cleaned_word and cleaned_word in AUTOCORRECT_DICT:
-                correction = AUTOCORRECT_DICT[cleaned_word]
-                if word_to_check != correction: # Avoid re-correction or case changes if not needed
-                    # The selection (word_to_check) is already made by check_cursor.select
-                    check_cursor.insertText(correction)
-                    # Cursor is now after the corrected word. self.setTextCursor might be needed if issues.
-        return # Original was return outside if
+                # Prepare word for dictionary lookup: lowercase, strip surrounding whitespace, and specific trailing punctuation
+                word_for_dict_lookup_base = original_word_in_doc.strip().lower()
+                
+                punctuation_to_strip_for_dict = ".,;:!?\"'()[]{}"
+                cleaned_word_for_dict = word_for_dict_lookup_base
+                # Iteratively remove trailing punctuation that's in our defined set
+                while cleaned_word_for_dict and cleaned_word_for_dict[-1] in punctuation_to_strip_for_dict:
+                    cleaned_word_for_dict = cleaned_word_for_dict[:-1]
+
+                if cleaned_word_for_dict and cleaned_word_for_dict in AUTOCORRECT_DICT:
+                    correction_template = AUTOCORRECT_DICT[cleaned_word_for_dict]
+                    
+                    final_correction = correction_template
+                    # Try to preserve original capitalization if it was just the first letter
+                    original_stripped_word = original_word_in_doc.strip()
+                    if original_stripped_word and original_stripped_word[0].isupper() and len(original_stripped_word) == len(cleaned_word_for_dict):
+                        if cleaned_word_for_dict == original_stripped_word.lower(): # Check if it's the same word, just different case
+                           final_correction = correction_template[0].upper() + correction_template[1:]
+                    
+                    trailing_punctuation = ""
+                    # Preserve trailing punctuation from the original word if it was stripped for dict lookup
+                    if len(original_stripped_word) > len(cleaned_word_for_dict):
+                         potential_punct = original_stripped_word[len(cleaned_word_for_dict):]
+                         is_all_known_punct = True
+                         for char_p in potential_punct:
+                             if char_p not in punctuation_to_strip_for_dict:
+                                 is_all_known_punct = False
+                                 break
+                         if is_all_known_punct:
+                             trailing_punctuation = potential_punct
+
+                    # Only perform replacement if the corrected version is actually different
+                    if original_word_in_doc.strip() != final_correction + trailing_punctuation:
+                        self.blockSignals(True) # Prevent textChanged recursion
+                        
+                        mod_cursor = self.textCursor() # Use a fresh cursor for modification
+                        mod_cursor.setPosition(start_of_word_idx) # Go to the start of the word to replace
+                        # Select the original word slice as identified (length of original_word_in_doc)
+                        mod_cursor.movePosition(QTextCursor.Right, QTextCursor.KeepAnchor, len(original_word_in_doc))
+                        
+                        mod_cursor.insertText(final_correction + trailing_punctuation)
+                        
+                        self.blockSignals(False) # Re-enable signals
+                        return # Correction made, exit
 
 class TypingThread(QThread):
     progress = pyqtSignal(int)
@@ -538,22 +623,55 @@ class TypingThread(QThread):
                 self.error.emit("Invalid target window selected at start.")
                 self.finished.emit()
                 return
+                
+            # Get window title for better identification
+            title_len = user32.GetWindowTextLengthW(self.target_window)
+            buff = ctypes.create_unicode_buffer(title_len + 1)
+            user32.GetWindowTextW(self.target_window, buff, title_len + 1)
+            self.target_title = buff.value
+            
+            self.error.emit(f"Target window: {self.target_title}")
             
             total = len(self.text)
             i = 0
             current_line_indent = ''
             
+            # Add rate limiting
+            char_count = 0
+            last_reset = time.time()
+            
             while i < total and self.running:
                 try:
+                    # Rate limiting - no more than 30 chars per second regardless of delay setting
+                    # This prevents "typing too fast" errors
+                    char_count += 1
+                    if char_count > 30:
+                        now = time.time()
+                        if now - last_reset < 1.0:
+                            time.sleep(1.0 - (now - last_reset))
+                        char_count = 0
+                        last_reset = time.time()
+                        
                     if not user32.IsWindow(self.target_window):
                         self.error.emit("Target window closed or became invalid during typing.")
                         break # Exit the loop
 
                     # Ensure target window is in focus before each keystroke
+                    # Try multiple times to set foreground to avoid race conditions
                     if self.target_window and user32.GetForegroundWindow() != self.target_window:
-                        user32.SetForegroundWindow(self.target_window)
-                        time.sleep(0.05)  # Increased delay to allow window focus to change
+                        for focus_attempt in range(3):  # Try up to 3 times
+                            user32.SetForegroundWindow(self.target_window)
+                            time.sleep(0.05)  # Wait between attempts
+                            if user32.GetForegroundWindow() == self.target_window:
+                                break  # Focus successful
                         
+                        # If still not focused, check if window is minimized and try to restore it
+                        if user32.GetForegroundWindow() != self.target_window:
+                            user32.ShowWindow(self.target_window, 9)  # SW_RESTORE = 9
+                            time.sleep(0.1)
+                            user32.SetForegroundWindow(self.target_window)
+                            time.sleep(0.05)
+                    
                     ch = self.text[i]
                     # autotab logic
                     if ch == '\n':
@@ -562,32 +680,39 @@ class TypingThread(QThread):
                             prev_line = self.text[:i]
                         else:
                             prev_line = self.text[prev_newline+1:i]
+                        
                         leading_ws = ''
                         for c in prev_line:
                             if c in (' ', '\t'):
                                 leading_ws += c
                             else:
                                 break
+                                
                         current_line_indent = leading_ws
                         if prev_line.rstrip().endswith(':'):
                             current_line_indent += '    '
+                            
                         pyautogui.typewrite('\n')
                         time.sleep(self.delay)
+                        
                         # Check if indentation already exists at cursor
                         if current_line_indent:
                             # Copy a few chars at cursor to clipboard
                             pyautogui.hotkey('shift', 'end')
                             pyautogui.hotkey('ctrl', 'c')
                             typed = pyperclip.paste()
+                            
                             # Only type missing part of indent
                             missing = current_line_indent
                             if typed.startswith(current_line_indent):
                                 missing = ''
                             elif typed and current_line_indent.startswith(typed):
                                 missing = current_line_indent[len(typed):]
+                                
                             if missing:
                                 pyautogui.typewrite(missing)
                                 time.sleep(self.delay * len(missing))
+                                
                         i += 1
                         self.progress.emit(int((i / total) * 100))
                         continue
@@ -600,20 +725,23 @@ class TypingThread(QThread):
                             time.sleep(self.delay)
                             pyautogui.press("backspace")
                             time.sleep(self.delay)
+                            
                     # type or emoji-paste
                     if emoji.is_emoji(ch):
                         pyperclip.copy(ch)
                         pyautogui.hotkey("ctrl", "v")
                     else:
                         pyautogui.typewrite(ch)
-                    time.sleep(self.delay)
+                        time.sleep(self.delay)
 
                     # punctuation pause
                     if ch in ".!?," and random.random() < self.punc_pause_prob:
                         time.sleep(random.uniform(0.1, 0.25))
+                        
                     # space pause
                     if ch == " " and random.random() < self.space_pause_prob:
                         time.sleep(random.uniform(0.07, 0.18))
+                        
                     # thinking pause
                     if random.random() < self.thinking_pause_prob:
                         time.sleep(random.uniform(0.7, 1.5))
@@ -779,27 +907,53 @@ class TypingBot(QMainWindow):
             
             # Create fade-in animation
             self.fade_anim = QPropertyAnimation(self.opacity_effect, b"opacity")
-            self.fade_anim.setDuration(1500)
+            self.fade_anim.setDuration(2000)  # Longer duration (2 seconds)
             self.fade_anim.setStartValue(0.0)
             self.fade_anim.setEndValue(1.0)
             self.fade_anim.setEasingCurve(QEasingCurve.OutCubic)
-            self.fade_anim.finished.connect(self.show_welcome_tooltip)
+            self.fade_anim.finished.connect(self._schedule_welcome_tooltip)
             
             # Start animation
             self.fade_anim.start()
     
+    def _schedule_welcome_tooltip(self):
+        """Schedules the welcome tooltip to appear after a short delay post-animation."""
+        # Force recapture of the eye_label reference
+        if hasattr(self, 'eye_label') and self.eye_label:
+            self.eye_label.update()  # Force a repaint
+            QTimer.singleShot(200, self.show_welcome_tooltip)  # 200ms delay
+    
     def show_welcome_tooltip(self):
         """Show welcome tooltip after animation completes"""
-        if hasattr(self, 'eye_label') and self.eye_label and \
-           hasattr(self, 'opacity_effect') and self.opacity_effect.opacity() >= 0.99: # Check if fully opaque (allow for float precision)
-            QToolTip.showText(
-                self.eye_label.mapToGlobal(QPoint(self.eye_label.width() // 2, 
-                                                 self.eye_label.height() // 2)),
-                "Welcome to Eyetype4You!<br>The intelligent typing assistant",
-                self.eye_label,
-                QRect(), # Empty rect, let Qt decide based on position
-                3000  # Show for 3000 milliseconds (3 seconds)
-            )
+        if hasattr(self, 'eye_label') and self.eye_label:
+            # Create a more permanent custom tooltip-like label
+            tooltip_text = "Welcome to Eyetype4You!<br>The intelligent typing assistant"
+            tooltip = QLabel(self)
+            tooltip.setText(tooltip_text)
+            tooltip.setStyleSheet("""
+                background-color: #333;
+                color: white;
+                border: 1px solid #555;
+                border-radius: 6px;
+                padding: 8px;
+                font-size: 14px;
+            """)
+            tooltip.setAlignment(Qt.AlignCenter)
+            tooltip.setWordWrap(True)
+            tooltip.setFixedWidth(300)
+            tooltip.adjustSize()
+            
+            # Position tooltip above the eye_label
+            tooltip_pos = self.eye_label.mapToGlobal(QPoint(
+                (self.eye_label.width() - tooltip.width()) // 2,
+                -tooltip.height() - 10  # 10px above the eye label
+            ))
+            tooltip_pos = self.mapFromGlobal(tooltip_pos)
+            tooltip.move(tooltip_pos)
+            
+            # Show the tooltip and make it disappear after 5 seconds
+            tooltip.show()
+            QTimer.singleShot(5000, tooltip.deleteLater)  # 5 seconds display
     
     def setup_menu(self):
         menubar = self.menuBar()
@@ -1054,7 +1208,7 @@ class TypingBot(QMainWindow):
         self.progress_label.setText("0%")
         self.show_popup("Done", "Typing complete!")
         self.save_memory()
-    
+
     def toggle_autocorrect(self, checked):
         """Toggle autocorrect functionality"""
         if hasattr(self, 'text_edit') and isinstance(self.text_edit, AutoCorrectTextEdit):
