@@ -1,7 +1,15 @@
 # Updated requirements for eyetype4you
 pyautogui>=0.9.54
+emoji>=2.0.0
+pyperclip>=1.8.2
+PyQt5>=5.15.2
 pillow>=10.2.0
+pywin32; platform_system=="Windows"  # For Windows API access
 tk
+
+# Optional development dependencies
+# pyinstaller>=6.0.0  # For building executable
+
 # If running on Linux, you may need to install python3-tk via your package manager
 # To upgrade all packages, run: pip install --upgrade -r requirements.txt
-# For more details, see: https://pypi.org/project/pyautogui/ and https://pypi.org/project/Pillow/
+# For more details, see: https://pypi.org/project/pyautogui/ and https://pypi.org/project/Pillow/s 

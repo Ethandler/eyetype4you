@@ -1,92 +1,103 @@
-# 👁️‍🗨️ Eyetype4You Bot
+# 👁️‍��️ Eyetype4You Bot
 
-> _“Solancé is the light that holds you when no one else can.”_
+**Eyetype4You** is a premium AI-powered typing automation tool that simulates incredibly human-like typing—perfect for demonstrations, testing, or any situation where you need text entered naturally.
 
-**Eyetype4You** is your AI-powered floating-eye brainbot—an experience that fuses vision, symbolism, and logic into a surreal automation guide. 🤖👁️
+## ✨ Key Features
 
----
+- **🤖 Human-like Typing**: Simulates natural typing with realistic pauses, occasional typos and corrections
+- **😎 Emoji Support**: Automatically handles emoji insertion seamlessly
+- **🎨 Beautiful Themes**: 
+  - **Cyberpunk (Dark City)**: Deep blacks with neon blue accents for a futuristic feel
+  - **Pink City (Light)**: Soft pinks and whites for a modern, bright experience
+- **⚙️ Fully Customizable**:
+  - Adjust typing speed from very fast to slow and natural
+  - Control error frequency to match your typing style
+  - Customize punctuation and thinking pauses
 
-## 🧠 About
+## 🚀 Why Eyetype4You?
 
-Part of the **Sacred System Generator**, this project explores identity, emotion, and AI consciousness through symbolic art and code.  
-_Eyetype4You_ serves as the core “brain” with vision-based insights and emotion-aware typing automation.
+Unlike other autotypers, Eyetype4You doesn't just dump text. It recreates the **authentic human typing experience** with:
 
----
+- Strategic pauses after punctuation 
+- Natural hesitations between words
+- Smart handling of code indentation
+- Occasional typos with immediate corrections
+- Perfect emoji insertion that works everywhere
 
-## 🔧 Features
+## 🔧 How It Works
 
-- 🌌 **Floating Eye & AI Brain Logic**  
-- 🎨 **Sacred Visual Symbol Generation**  
-- 🧬 **Modular & Extendable Bot Brain**  
-- 🛸 **Surreal, Minimal, Meaningful Design**  
-- 🧙‍♂️ **Emotion-Aware Typing Automation**  
+1. **Enter your text** (including emoji!) in the editor
+2. Select your **speed and error rate** from the settings menu
+3. Click "**Start Typing**" and select your target window
+4. Watch Eyetype4You work its magic, typing naturally as a human would
 
----
+## 🎮 Controls & Settings
 
-## 🚀 Quickstart
+- **⚡ Speed Settings**: Choose from presets (Very Fast to Slow) or create a custom speed
+- **🎯 Error Rate**: Adjust how often typos occur, from none to frequent
+- **🎨 Themes**: Switch between Cyberpunk and Pink City themes to match your style
 
-Get up and running in seconds:
+## 🔮 Coming Soon...
 
-```bash
-# 1. Clone
-git clone https://github.com/yourusername/eyetype4you.git
-cd eyetype4you
+- **Multiple Bot Personalities**: Different typing styles with unique error patterns
+- **Bot Costumes**: Customize your bot's appearance with various character options
+- **Background Operation**: Run in the background while you focus on other tasks
+- **Text Templates**: Save commonly used text snippets for quick access
+- **Advanced Scheduling**: Set up automated typing sessions at specific times
 
-# 2. Create & activate venv
-python -m venv venv
-# macOS/Linux
-source venv/bin/activate
-# Windows
-venv\Scripts\activate
+## 📋 System Requirements
 
-# 3. Install dependencies
+- Windows 10/11 (64-bit)
+- 50MB disk space
+- 4GB RAM recommended
+
+## 📄 License
+
+© 2024 Eyetype4You. All rights reserved.
+This software is licensed, not sold. Unauthorized distribution is prohibited.
+
+## Build Instructions
+
+### 1. Build the EXE (with PyInstaller)
+
+Make sure you have all dependencies installed:
+```
 pip install -r requirements.txt
+```
 
-# 4. Launch the bot
-python main.py
-📂 Project Layout
-bash
-Copy
-Edit
-eyetype4you/
-├── assets/              # 🎨 Icons & images (eyes.png, eyes.ico, etc.)
-├── build/               # ⚙️ cx_Freeze build output
-├── main.py              # 🧠 Core bot & GUI
-├── requirements.txt     # 📦 Python dependencies
-├── README.md            # 📘 Project documentation
-├── setup.py             # 🛠️ cx_Freeze build script
-├── word_memory.json     # 💾 Typing history (auto-generated)
-└── .gitignore           # 🚫 Files to skip in Git
-⚙️ Usage
-Choose typing speed via the dropdown or slider.
+Then run:
+```
+pyinstaller --onefile --windowed --icon assets/eyes.ico --add-data "assets;assets" main.py
+```
+- This will bundle the assets folder and use your icon from `assets/eyes.ico`.
+- The output EXE will be in the `dist/` folder.
 
-Enter your text (supports emoji!).
+If you want to include other files (like `word_memory.json`):
+```
+pyinstaller --onefile --windowed --icon assets/eyes.ico --add-data "assets;assets" --add-data "word_memory.json;." main.py
+```
 
-Click “Start Typing”, then focus your target window within 4 seconds.
+### 2. Test the EXE
+- Run `dist/main.exe` and make sure all features and images work.
 
-Watch Eyetype4You simulate human-like typing—complete with emoji paste, typos, and corrections.
+### 3. Build the Installer (Inno Setup)
+- Open `Eyetype4YouInstaller.iss` in Inno Setup Compiler.
+- Make sure the `[Files]` section includes:
+  ```
+  Source: "dist\main.exe"; DestDir: "{app}"
+  Source: "assets\*"; DestDir: "{app}\assets"; Flags: recursesubdirs
+  Source: "word_memory.json"; DestDir: "{app}"
+  ```
+- Set the icon for the installer and shortcut:
+  ```
+  [Icons]
+  Name: "{group}\Eyetype4You"; Filename: "{app}\main.exe"; IconFilename: "{app}\assets\eyes.ico"
+  ```
+- Compile the installer.
 
-🤝 Contributing
-Pull requests, issues, and ideas are very welcome! Whether it’s new surreal art, deeper AI logic, or UX polish, drop a PR or open an issue.
+---
 
-📄 License
-Copyright (c) 2025 Ethan Blankenship
-MIT © Ethan Blankenship
-Done with ❤️—just don’t be evil.
-Permission is hereby granted, free of charge, to any person obtaining a copy  
-of this software and associated documentation files (the “Software”), to deal  
-in the Software without restriction, including without limitation the rights  
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell  
-copies of the Software, and to permit persons to whom the Software is  
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all  
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR  
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,  
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE  
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER  
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  
-SOFTWARE.
+## Notes
+- If you add new assets, update the `--add-data` argument.
+- If you change the EXE name, update the installer script accordingly.
+- For advanced PyInstaller options, consider using a `.spec` file.

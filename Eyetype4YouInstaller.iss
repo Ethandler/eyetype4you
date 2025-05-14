@@ -10,11 +10,12 @@
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{4F70656D-169F-49DA-BCD0-FEA3A0452639}
-AppName={#MyAppName}
-AppVersion={#MyAppVersion}
+AppName=Eyetype4You
+AppVersion=1.0
 ;AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
-DefaultDirName={autopf}\{#MyAppName}
+DefaultDirName={autopf}\Eyetype4You
+DefaultGroupName=Eyetype4You
 UninstallDisplayIcon={app}\{#MyAppExeName}
 ; "ArchitecturesAllowed=x64compatible" specifies that Setup cannot run
 ; on anything but x64 and Windows 11 on Arm.
@@ -31,9 +32,10 @@ InfoAfterFile=D:\Projects\eyetype4you\README.txt
 ; Remove the following line to run in administrative install mode (install for all users).
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
-OutputDir=D:\Projects\eyetype4you\installer
-OutputBaseFilename=EyeType4YouSetUp
-SetupIconFile=D:\Projects\eyetype4you\assets\eyes.ico
+OutputDir=installer
+OutputBaseFilename=Eyetype4YouSetup
+SetupIconFile=assets\eyes.ico
+Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
 
@@ -73,18 +75,17 @@ Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "D:\Projects\eyetype4you\build\exe.win-amd64-3.13\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Projects\eyetype4you\build\exe.win-amd64-3.13\emoji_annotations.json"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Projects\eyetype4you\build\exe.win-amd64-3.13\frozen_application_license.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Projects\eyetype4you\build\exe.win-amd64-3.13\python3.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Projects\eyetype4you\build\exe.win-amd64-3.13\python313.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Projects\eyetype4you\build\exe.win-amd64-3.13\word_memory.json"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Projects\eyetype4you\build\exe.win-amd64-3.13\assets\eyes.png"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\main.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "assets\*"; DestDir: "{app}\assets"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "word_memory.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README.txt"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{group}\Eyetype4You"; Filename: "{app}\main.exe"; IconFilename: "{app}\assets\eyes.ico"
+Name: "{group}\Uninstall Eyetype4You"; Filename: "{uninstallexe}"
+Name: "{autodesktop}\Eyetype4You"; Filename: "{app}\main.exe"; IconFilename: "{app}\assets\eyes.ico"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
