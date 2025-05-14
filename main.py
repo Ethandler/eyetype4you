@@ -22,6 +22,16 @@ pyautogui.FAILSAFE = False  # Disable fail-safe for smoother operation
 # Windows API for window handling
 user32 = ctypes.windll.user32
 
+# Windows constants for SendMessage/PostMessage
+WM_CHAR = 0x0102
+WM_KEYDOWN = 0x0100
+WM_KEYUP = 0x0101
+VK_RETURN = 0x0D
+VK_BACK = 0x08
+VK_TAB = 0x09
+VK_SHIFT = 0x10
+VK_CONTROL = 0x11
+
 # Common misspellings dictionary 
 AUTOCORRECT_DICT = {
     "teh": "the",
@@ -524,7 +534,8 @@ class AutoCorrectTextEdit(QTextEdit):
         current_doc_text = self.document().toPlainText() 
         cursor_pos = cursor.position()
 
-        if cursor_pos == 0: # Nothing to check if cursor is at the beginning
+        # Add safety check for empty document or cursor at beginning
+        if cursor_pos <= 0 or not current_doc_text:
             return
 
         # The character just typed is at cursor_pos - 1
@@ -536,7 +547,12 @@ class AutoCorrectTextEdit(QTextEdit):
         if last_char_typed in delimiters:
             # Find the start of the word that precedes the delimiter
             # Search backwards from the character *before* the delimiter (cursor_pos - 2)
-            search_end_idx = cursor_pos - 2 
+            search_end_idx = cursor_pos - 2
+            
+            # Another safety check
+            if search_end_idx < 0:
+                return
+                
             start_of_word_idx = -1
 
             for i in range(search_end_idx, -1, -1):
@@ -597,12 +613,289 @@ class AutoCorrectTextEdit(QTextEdit):
                         self.blockSignals(False) # Re-enable signals
                         return # Correction made, exit
 
+class DirectWindowTyper:
+    """Types into a window with focus control options"""
+    
+    def __init__(self, hwnd, background_mode=False, notepad_mode=False):
+        self.hwnd = hwnd
+        self.background_mode = background_mode
+        self.notepad_mode = notepad_mode
+        # Get window title for better identification
+        title_len = user32.GetWindowTextLengthW(hwnd)
+        buff = ctypes.create_unicode_buffer(title_len + 1)
+        user32.GetWindowTextW(hwnd, buff, title_len + 1)
+        self.window_title = buff.value
+        # Track success/failure of methods
+        self.last_method_used = None
+        self.method_success_count = {
+            "direct_send": 0,
+            "direct_post": 0,
+            "notepad_em": 0,
+            "pyautogui": 0
+        }
+    
+    def ensure_window_focus(self):
+        """Make sure the target window has focus if not in background mode"""
+        if not user32.IsWindow(self.hwnd):
+            return False
+            
+        # In background mode, we don't need focus, just check window is valid
+        if self.background_mode:
+            return True
+            
+        # If already has focus, we're good
+        if user32.GetForegroundWindow() == self.hwnd:
+            return True
+            
+        # Try to focus the window - multiple attempts
+        for i in range(3):
+            # If window is minimized, restore it
+            if user32.IsIconic(self.hwnd):
+                user32.ShowWindow(self.hwnd, 9)  # SW_RESTORE = 9
+                time.sleep(0.1)
+                
+            # Activate the window
+            if user32.SetForegroundWindow(self.hwnd):
+                time.sleep(0.1)  # Wait a bit for focus
+                if user32.GetForegroundWindow() == self.hwnd:
+                    return True
+            
+            # If not successful, wait a bit longer and try again
+            time.sleep(0.2)
+        
+        # Could not set focus after multiple attempts
+        return False
+    
+    def try_direct_message(self, char, method="send"):
+        """Try to type using direct Windows messaging"""
+        try:
+            # For Notepad mode, use the EM_REPLACESEL message directly
+            if self.notepad_mode and char:
+                EM_REPLACESEL = 0x00C2
+                char_buffer = ctypes.create_unicode_buffer(char)
+                if method == "send":
+                    result = user32.SendMessageW(self.hwnd, EM_REPLACESEL, 1, ctypes.byref(char_buffer))
+                else:
+                    result = user32.PostMessageW(self.hwnd, EM_REPLACESEL, 1, ctypes.byref(char_buffer))
+                if result:
+                    self.method_success_count["notepad_em"] += 1
+                    self.last_method_used = "notepad_em"
+                    return True
+                    
+            # For function keys or special keys
+            if char == '\n':
+                # Send Enter key
+                if method == "send":
+                    user32.SendMessageW(self.hwnd, WM_KEYDOWN, VK_RETURN, 0)
+                    user32.SendMessageW(self.hwnd, WM_KEYUP, VK_RETURN, 0)
+                else:
+                    user32.PostMessageW(self.hwnd, WM_KEYDOWN, VK_RETURN, 0)
+                    user32.PostMessageW(self.hwnd, WM_KEYUP, VK_RETURN, 0)
+            elif char == '\t':
+                # Send Tab key
+                if method == "send":
+                    user32.SendMessageW(self.hwnd, WM_KEYDOWN, VK_TAB, 0)
+                    user32.SendMessageW(self.hwnd, WM_KEYUP, VK_TAB, 0)
+                else:
+                    user32.PostMessageW(self.hwnd, WM_KEYDOWN, VK_TAB, 0)
+                    user32.PostMessageW(self.hwnd, WM_KEYUP, VK_TAB, 0)
+            elif char == '\b':
+                # Send Backspace key
+                if method == "send":
+                    user32.SendMessageW(self.hwnd, WM_KEYDOWN, VK_BACK, 0)
+                    user32.SendMessageW(self.hwnd, WM_KEYUP, VK_BACK, 0)
+                else:
+                    user32.PostMessageW(self.hwnd, WM_KEYDOWN, VK_BACK, 0)
+                    user32.PostMessageW(self.hwnd, WM_KEYUP, VK_BACK, 0)
+            elif not char:
+                # Empty char is just for testing if the window accepts messages
+                return True
+            else:
+                # Send regular character
+                char_code = ord(char)
+                if method == "send":
+                    result = user32.SendMessageW(self.hwnd, WM_CHAR, char_code, 0)
+                else:
+                    result = user32.PostMessageW(self.hwnd, WM_CHAR, char_code, 0)
+                
+                if not result:
+                    # If we're dealing with Notepad, try another approach
+                    if "notepad" in self.window_title.lower() or self.notepad_mode:
+                        # Notepad specific approach - EM_REPLACESEL message
+                        EM_REPLACESEL = 0x00C2
+                        char_buffer = ctypes.create_unicode_buffer(char)
+                        if method == "send":
+                            result = user32.SendMessageW(self.hwnd, EM_REPLACESEL, 1, ctypes.byref(char_buffer))
+                        else:
+                            result = user32.PostMessageW(self.hwnd, EM_REPLACESEL, 1, ctypes.byref(char_buffer))
+                        if result:
+                            self.method_success_count["notepad_em"] += 1
+                            self.last_method_used = "notepad_em"
+                            return True
+                    return False
+            return True
+        except Exception as e:
+            print(f"Exception in try_direct_message: {e}")
+            return False
+    
+    def type_char(self, char):
+        """Type a single character, using best available method"""
+        if not user32.IsWindow(self.hwnd):
+            return False
+            
+        # If in background mode, try direct message first
+        if self.background_mode:
+            # Try SendMessage first
+            if self.try_direct_message(char, "send"):
+                self.method_success_count["direct_send"] += 1
+                self.last_method_used = "direct_send"
+                return True
+                
+            # Try PostMessage next
+            if self.try_direct_message(char, "post"):
+                self.method_success_count["direct_post"] += 1
+                self.last_method_used = "direct_post"
+                return True
+                
+            # If both direct methods fail, fall back to pyautogui with focus
+            if self.ensure_window_focus():
+                if char == '\b':  # backspace
+                    pyautogui.press('backspace')
+                else:
+                    pyautogui.typewrite(char)
+                self.method_success_count["pyautogui"] += 1
+                self.last_method_used = "pyautogui"
+                return True
+                
+            return False
+        else:
+            # Regular typing with pyautogui - requires focus
+            if not self.ensure_window_focus():
+                # Failed to give focus to target window
+                return False
+            
+            if char == '\b':  # backspace
+                pyautogui.press('backspace')
+            else:
+                pyautogui.typewrite(char)
+            
+            self.method_success_count["pyautogui"] += 1
+            self.last_method_used = "pyautogui"
+            return True
+        
+    def get_diagnostic_info(self):
+        """Return diagnostic information about which methods worked"""
+        return f"SendMessage: {self.method_success_count['direct_send']}, " \
+               f"PostMessage: {self.method_success_count['direct_post']}, " \
+               f"NotepadEM: {self.method_success_count['notepad_em']}, " \
+               f"PyAutoGUI: {self.method_success_count['pyautogui']}, " \
+               f"Last method: {self.last_method_used}"
+    
+    def type_string(self, text, delay=0.01):
+        """Type a string with optional delay between characters"""
+        if not text or not user32.IsWindow(self.hwnd):
+            return False
+            
+        success = True
+        for char in text:
+            if not self.type_char(char):
+                success = False
+                
+            if delay > 0:
+                time.sleep(delay)
+                
+        return success
+    
+    def paste_text(self, text):
+        """Set clipboard and paste text"""
+        if not text or not user32.IsWindow(self.hwnd):
+            return False
+            
+        # Save original clipboard content
+        original_clipboard = pyperclip.paste()
+        
+        try:
+            # Set clipboard to desired text
+            pyperclip.copy(text)
+            
+            if self.background_mode:
+                # Try different approaches to paste
+                # First approach: Direct Windows messages
+                success = False
+                
+                # Try SendMessage for Ctrl+V
+                try:
+                    user32.SendMessageW(self.hwnd, WM_KEYDOWN, VK_CONTROL, 0)
+                    user32.SendMessageW(self.hwnd, WM_KEYDOWN, ord('V'), 0)
+                    user32.SendMessageW(self.hwnd, WM_KEYUP, ord('V'), 0)
+                    user32.SendMessageW(self.hwnd, WM_KEYUP, VK_CONTROL, 0)
+                    success = True
+                    self.method_success_count["direct_send"] += 1
+                except:
+                    success = False
+                
+                # If that fails, try PostMessage for Ctrl+V
+                if not success:
+                    try:
+                        user32.PostMessageW(self.hwnd, WM_KEYDOWN, VK_CONTROL, 0)
+                        user32.PostMessageW(self.hwnd, WM_KEYDOWN, ord('V'), 0)
+                        user32.PostMessageW(self.hwnd, WM_KEYUP, ord('V'), 0)
+                        user32.PostMessageW(self.hwnd, WM_KEYUP, VK_CONTROL, 0)
+                        success = True
+                        self.method_success_count["direct_post"] += 1
+                    except:
+                        success = False
+                
+                # If all else fails, fall back to pyautogui
+                if not success and self.ensure_window_focus():
+                    pyautogui.hotkey('ctrl', 'v')
+                    success = True
+                    self.method_success_count["pyautogui"] += 1
+            else:
+                # Ensure window has focus
+                if not self.ensure_window_focus():
+                    return False
+                    
+                # Paste with keyboard shortcut
+                pyautogui.hotkey('ctrl', 'v')
+                success = True
+                self.method_success_count["pyautogui"] += 1
+                
+            time.sleep(0.05)  # Brief pause to ensure paste completes
+            
+            return success
+        finally:
+            # Restore original clipboard
+            pyperclip.copy(original_clipboard)
+    
+    def type_string_failsafe(self, text, delay=0.01):
+        """Alternative typing method that tries individual characters and checks focus after each one"""
+        if not text or not user32.IsWindow(self.hwnd):
+            return False
+            
+        success = True
+        for char in text:
+            # Ensure focus for each character if not in background mode
+            if not self.background_mode and not self.ensure_window_focus():
+                return False
+                
+            # Type the character with all possible methods until one works
+            if not self.type_char(char):
+                success = False
+                
+            # Delay between characters
+            if delay > 0:
+                time.sleep(delay)
+
+        return success
+
 class TypingThread(QThread):
     progress = pyqtSignal(int)
     finished = pyqtSignal()
     error = pyqtSignal(str)
     
-    def __init__(self, text, delay, error_rate, punc_pause_prob, space_pause_prob, thinking_pause_prob):
+    def __init__(self, text, delay, error_rate, punc_pause_prob, space_pause_prob, thinking_pause_prob, 
+                 background_mode, notepad_mode=False):
         super().__init__()
         self.text = text
         self.delay = delay
@@ -610,17 +903,22 @@ class TypingThread(QThread):
         self.punc_pause_prob = punc_pause_prob
         self.space_pause_prob = space_pause_prob
         self.thinking_pause_prob = thinking_pause_prob
+        self.background_mode = background_mode
+        self.notepad_mode = notepad_mode
         self.running = True
         self.target_window = None
         
     def run(self):
         try:
-            time.sleep(2)  # Give user time to click into target window
+            self.error.emit("👆 Click in the target window now...")
+            time.sleep(1)  # Brief pause
+            self.error.emit("⌨️ Get ready to type in 1 second...")
+            time.sleep(1)  # Second pause before starting
             
             # Get and store the active window handle
             self.target_window = user32.GetForegroundWindow()
             if not user32.IsWindow(self.target_window):
-                self.error.emit("Invalid target window selected at start.")
+                self.error.emit("❌ Invalid target window selected. Please try again.")
                 self.finished.emit()
                 return
                 
@@ -630,7 +928,38 @@ class TypingThread(QThread):
             user32.GetWindowTextW(self.target_window, buff, title_len + 1)
             self.target_title = buff.value
             
-            self.error.emit(f"Target window: {self.target_title}")
+            # Create diagnostic label for background mode
+            bg_status = "enabled" if self.background_mode else "disabled"
+            notepad_status = "enabled" if self.notepad_mode else "disabled"
+            self.error.emit(f"✅ Typing into: {self.target_title} (Background: {bg_status}, Notepad: {notepad_status})")
+            
+            # Create direct typer
+            typer = DirectWindowTyper(self.target_window, self.background_mode, self.notepad_mode)
+            
+            # First ensure window has focus before we start
+            if not typer.ensure_window_focus():
+                self.error.emit(f"Could not focus target window: {self.target_title}")
+                self.finished.emit()
+                return
+                
+            # Test typing with each method to identify what works with this window type
+            self.error.emit("🧪 Testing typing methods...")
+            
+            # Try the direct send method
+            direct_send_works = typer.try_direct_message("", "send")  # Try empty char to test without typing
+            
+            # Try the direct post method
+            direct_post_works = typer.try_direct_message("", "post")  # Try empty char to test without typing
+            
+            # PyAutoGUI always works when window has focus
+            pyautogui_works = True
+            
+            # Log the results
+            self.error.emit(f"Compatible methods: DirectSend={direct_send_works}, DirectPost={direct_post_works}, PyAutoGUI={pyautogui_works}")
+            
+            # If we're in background mode but direct messaging won't work, warn the user
+            if self.background_mode and not (direct_send_works or direct_post_works):
+                self.error.emit("⚠️ Background mode may not work with this window type. Falling back to foreground typing.")
             
             total = len(self.text)
             i = 0
@@ -639,11 +968,11 @@ class TypingThread(QThread):
             # Add rate limiting
             char_count = 0
             last_reset = time.time()
+            last_focus_check = time.time()
             
             while i < total and self.running:
                 try:
                     # Rate limiting - no more than 30 chars per second regardless of delay setting
-                    # This prevents "typing too fast" errors
                     char_count += 1
                     if char_count > 30:
                         now = time.time()
@@ -652,27 +981,23 @@ class TypingThread(QThread):
                         char_count = 0
                         last_reset = time.time()
                         
+                    # Check window is still valid periodically
                     if not user32.IsWindow(self.target_window):
                         self.error.emit("Target window closed or became invalid during typing.")
                         break # Exit the loop
-
-                    # Ensure target window is in focus before each keystroke
-                    # Try multiple times to set foreground to avoid race conditions
-                    if self.target_window and user32.GetForegroundWindow() != self.target_window:
-                        for focus_attempt in range(3):  # Try up to 3 times
-                            user32.SetForegroundWindow(self.target_window)
-                            time.sleep(0.05)  # Wait between attempts
-                            if user32.GetForegroundWindow() == self.target_window:
-                                break  # Focus successful
-                        
-                        # If still not focused, check if window is minimized and try to restore it
-                        if user32.GetForegroundWindow() != self.target_window:
-                            user32.ShowWindow(self.target_window, 9)  # SW_RESTORE = 9
-                            time.sleep(0.1)
-                            user32.SetForegroundWindow(self.target_window)
-                            time.sleep(0.05)
                     
+                    # Check focus every 1 second to make sure we haven't lost it
+                    now = time.time()
+                    if now - last_focus_check > 1.0:
+                        if not typer.ensure_window_focus():
+                            self.error.emit("Lost focus on target window. Trying to refocus...")
+                            if not typer.ensure_window_focus():  # Try one more time
+                                self.error.emit("Could not refocus target window. Aborting.")
+                                break
+                        last_focus_check = now
+
                     ch = self.text[i]
+                    
                     # autotab logic
                     if ch == '\n':
                         prev_newline = self.text.rfind('\n', 0, i)
@@ -691,28 +1016,24 @@ class TypingThread(QThread):
                         current_line_indent = leading_ws
                         if prev_line.rstrip().endswith(':'):
                             current_line_indent += '    '
-                            
-                        pyautogui.typewrite('\n')
+                        
+                        # Type newline
+                        if not typer.type_char('\n'):
+                            self.error.emit("Failed to type newline. Window may have lost focus.")
+                            continue
                         time.sleep(self.delay)
                         
-                        # Check if indentation already exists at cursor
+                        # Add indentation if needed
                         if current_line_indent:
-                            # Copy a few chars at cursor to clipboard
-                            pyautogui.hotkey('shift', 'end')
-                            pyautogui.hotkey('ctrl', 'c')
-                            typed = pyperclip.paste()
-                            
-                            # Only type missing part of indent
-                            missing = current_line_indent
-                            if typed.startswith(current_line_indent):
-                                missing = ''
-                            elif typed and current_line_indent.startswith(typed):
-                                missing = current_line_indent[len(typed):]
-                                
-                            if missing:
-                                pyautogui.typewrite(missing)
-                                time.sleep(self.delay * len(missing))
-                                
+                            success = typer.type_string_failsafe(current_line_indent, self.delay)
+                            if not success:
+                                self.error.emit("Warning: Failed to type indentation. Trying alternative method...")
+                                # Try character by character as fallback
+                                for indent_char in current_line_indent:
+                                    if not typer.type_char(indent_char):
+                                        self.error.emit("Failed to type indentation character.")
+                                    time.sleep(self.delay)
+                        
                         i += 1
                         self.progress.emit(int((i / total) * 100))
                         continue
@@ -721,17 +1042,33 @@ class TypingThread(QThread):
                     if ch.isalnum() and random.random() < self.error_rate:
                         if (nb := keyboard_neighbors.get(ch, [])):
                             typo = random.choice(nb)
-                            pyautogui.typewrite(typo)
+                            if not typer.type_char(typo):
+                                self.error.emit("Failed to type typo character. Checking window focus...")
+                                if not typer.ensure_window_focus():
+                                    self.error.emit("Lost focus and could not refocus. Aborting.")
+                                    break
                             time.sleep(self.delay)
-                            pyautogui.press("backspace")
+                            if not typer.type_char('\b'):  # backspace
+                                self.error.emit("Failed to type backspace. Checking window focus...")
+                                if not typer.ensure_window_focus():
+                                    self.error.emit("Lost focus and could not refocus. Aborting.")
+                                    break
                             time.sleep(self.delay)
                             
                     # type or emoji-paste
                     if emoji.is_emoji(ch):
-                        pyperclip.copy(ch)
-                        pyautogui.hotkey("ctrl", "v")
+                        # Emoji needs special handling - use paste
+                        if not typer.paste_text(ch):
+                            self.error.emit("Failed to paste emoji. Checking window focus...")
+                            if not typer.ensure_window_focus():
+                                self.error.emit("Lost focus and could not refocus. Aborting.")
+                                break
                     else:
-                        pyautogui.typewrite(ch)
+                        if not typer.type_char(ch):
+                            self.error.emit("Failed to type character. Checking window focus...")
+                            if not typer.ensure_window_focus():
+                                self.error.emit("Lost focus and could not refocus. Aborting.")
+                                break
                         time.sleep(self.delay)
 
                     # punctuation pause
@@ -757,6 +1094,10 @@ class TypingThread(QThread):
             
             self.progress.emit(0)
             self.finished.emit()
+            
+            # At the end of typing, show diagnostics if there were any issues
+            diagnostic_info = typer.get_diagnostic_info()
+            self.error.emit(f"Typing complete. Methods used: {diagnostic_info}")
             
         except Exception as e:
             self.error.emit(f"Critical error in typing thread: {e}")
@@ -837,11 +1178,29 @@ class StatusIndicator(QFrame):
         self.theme_label = QLabel()
         self.theme_label.setObjectName("statusLabel")
         
+        # Background mode indicator
+        self.bg_mode_label = QLabel()
+        self.bg_mode_label.setObjectName("statusLabel")
+        
+        # Notepad mode indicator
+        self.notepad_mode_label = QLabel()
+        self.notepad_mode_label.setObjectName("statusLabel")
+        
         layout.addWidget(self.speed_label)
         layout.addStretch()
         layout.addWidget(self.error_label)
         layout.addStretch()
         layout.addWidget(self.theme_label)
+        layout.addStretch()
+        layout.addWidget(self.bg_mode_label)
+        layout.addStretch()
+        layout.addWidget(self.notepad_mode_label)
+        
+        # Connect to checkbox changes
+        if hasattr(parent, 'background_mode_check'):
+            parent.background_mode_check.stateChanged.connect(self.update_status)
+        if hasattr(parent, 'notepad_mode_check'):
+            parent.notepad_mode_check.stateChanged.connect(self.update_status)
         
         self.update_status()
     
@@ -858,6 +1217,88 @@ class StatusIndicator(QFrame):
         theme = self.parent.theme
         theme_name = "Cyberpunk" if theme == "cyberpunk" else "Pink City"
         self.theme_label.setText(f"🎨 Theme: {theme_name}")
+        
+        # Update background mode
+        if hasattr(self.parent, 'background_mode_check'):
+            bg_mode = "Enabled" if self.parent.background_mode_check.isChecked() else "Disabled"
+            self.bg_mode_label.setText(f"🖥️ Background: {bg_mode}")
+            
+        # Update notepad mode
+        if hasattr(self.parent, 'notepad_mode_check'):
+            notepad_mode = "Enabled" if self.parent.notepad_mode_check.isChecked() else "Disabled"
+            self.notepad_mode_label.setText(f"📝 Notepad: {notepad_mode}")
+
+class SplashScreen(QDialog):
+    """A reliable splash screen shown at application startup"""
+    
+    def __init__(self, parent=None):
+        super().__init__(parent, Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+        self.setModal(True)
+        self.setFixedSize(450, 300)
+        
+        # Center on screen
+        screen_size = QApplication.primaryScreen().geometry()
+        self.move((screen_size.width() - self.width()) // 2,
+                  (screen_size.height() - self.height()) // 2)
+        
+        # Set up UI
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(10)
+        
+        # Eye image
+        self.eye_label = QLabel()
+        self.eye_label.setAlignment(Qt.AlignCenter)
+        try:
+            pixmap = QPixmap("assets/eyes.png").scaled(175, 175, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.eye_label.setPixmap(pixmap)
+        except:
+            # Fallback if image is missing
+            self.eye_label.setText("👁️ 👁️")
+            self.eye_label.setStyleSheet("font-size: 64px;")
+        
+        # Welcome text
+        title = QLabel("Welcome to Eyetype4You")
+        title.setAlignment(Qt.AlignCenter)
+        title.setStyleSheet("font-size: 24px; font-weight: bold; color: #08d9d6;")
+        
+        subtitle = QLabel("The intelligent typing assistant")
+        subtitle.setAlignment(Qt.AlignCenter)
+        subtitle.setStyleSheet("font-size: 16px; color: #f8f8ff;")
+        
+        # Close button
+        self.close_btn = QPushButton("Start Using Eyetype4You")
+        self.close_btn.setFixedHeight(40)
+        self.close_btn.clicked.connect(self.accept)
+        
+        # Add all widgets to layout
+        layout.addWidget(self.eye_label)
+        layout.addWidget(title)
+        layout.addWidget(subtitle)
+        layout.addWidget(self.close_btn)
+        
+        # Set dark background
+        self.setStyleSheet("""
+            QDialog {
+                background-color: #10101a;
+                border: 2px solid #08d9d6;
+                border-radius: 10px;
+            }
+            QPushButton {
+                background-color: #08d9d6;
+                color: #1a1a2e;
+                border: none;
+                border-radius: 8px;
+                font-weight: bold;
+                font-size: 16px;
+            }
+            QPushButton:hover {
+                background-color: #20e7e4;
+            }
+        """)
+        
+        # Auto-close after 5 seconds
+        QTimer.singleShot(5000, self.accept)
 
 class TypingBot(QMainWindow):
     def __init__(self):
@@ -891,69 +1332,96 @@ class TypingBot(QMainWindow):
         # Apply theme
         self.apply_theme()
         
-        # Add welcome animation after UI is set up
-        QTimer.singleShot(200, self.animate_welcome)
+        # Show splash screen
+        splash = SplashScreen(self)
+        splash.exec_()
     
-    def animate_welcome(self):
-        """Create welcome animation for the eye image"""
-        if hasattr(self, 'eye_label') and self.eye_label:
-            # Initial state - make invisible
-            self.eye_label.setGraphicsEffect(None)  # Clear any previous effects
-            
-            # Create opacity effect
-            self.opacity_effect = QGraphicsOpacityEffect(self.eye_label)
-            self.opacity_effect.setOpacity(0.0)
-            self.eye_label.setGraphicsEffect(self.opacity_effect)
-            
-            # Create fade-in animation
-            self.fade_anim = QPropertyAnimation(self.opacity_effect, b"opacity")
-            self.fade_anim.setDuration(2000)  # Longer duration (2 seconds)
-            self.fade_anim.setStartValue(0.0)
-            self.fade_anim.setEndValue(1.0)
-            self.fade_anim.setEasingCurve(QEasingCurve.OutCubic)
-            self.fade_anim.finished.connect(self._schedule_welcome_tooltip)
-            
-            # Start animation
-            self.fade_anim.start()
-    
-    def _schedule_welcome_tooltip(self):
-        """Schedules the welcome tooltip to appear after a short delay post-animation."""
-        # Force recapture of the eye_label reference
-        if hasattr(self, 'eye_label') and self.eye_label:
-            self.eye_label.update()  # Force a repaint
-            QTimer.singleShot(200, self.show_welcome_tooltip)  # 200ms delay
-    
-    def show_welcome_tooltip(self):
-        """Show welcome tooltip after animation completes"""
-        if hasattr(self, 'eye_label') and self.eye_label:
-            # Create a more permanent custom tooltip-like label
-            tooltip_text = "Welcome to Eyetype4You!<br>The intelligent typing assistant"
-            tooltip = QLabel(self)
-            tooltip.setText(tooltip_text)
-            tooltip.setStyleSheet("""
-                background-color: #333;
-                color: white;
-                border: 1px solid #555;
-                border-radius: 6px;
-                padding: 8px;
-                font-size: 14px;
-            """)
-            tooltip.setAlignment(Qt.AlignCenter)
-            tooltip.setWordWrap(True)
-            tooltip.setFixedWidth(300)
-            tooltip.adjustSize()
-            
-            # Position tooltip above the eye_label
-            tooltip_pos = self.eye_label.mapToGlobal(QPoint(
-                (self.eye_label.width() - tooltip.width()) // 2,
-                -tooltip.height() - 10  # 10px above the eye label
-            ))
-            tooltip_pos = self.mapFromGlobal(tooltip_pos)
-            tooltip.move(tooltip_pos)
-            
-            # Show the tooltip and make it disappear after 5 seconds
-            tooltip.show()
-            QTimer.singleShot(5000, tooltip.deleteLater)  # 5 seconds display
+    def setup_ui(self):
+        # Bot image with reference
+        self.eye_label = QLabel()
+        self.eye_label.setAlignment(Qt.AlignCenter)
+        try:
+            pixmap = QPixmap("assets/eyes.png").scaled(175, 175, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.eye_label.setPixmap(pixmap)
+        except:
+            # Fallback if image is missing
+            self.eye_label.setText("👁️ 👁️")
+            self.eye_label.setStyleSheet("font-size: 64px;")
+        
+        # Control buttons with tooltips
+        button_layout = QHBoxLayout()
+        
+        self.start_button = QPushButton("▶️ Start Typing")
+        self.start_button.setFixedSize(140, 50)
+        self.start_button.setToolTip("Click to begin typing your text.<br>You'll have 4 seconds to focus on your target window.")
+        self.start_button.clicked.connect(self.start_typing)
+        
+        self.close_button = QPushButton("✖ Close")
+        self.close_button.setObjectName("closeButton")
+        self.close_button.setFixedSize(140, 50)
+        self.close_button.setFont(QFont("Segoe UI", 14, QFont.Bold))
+        self.close_button.clicked.connect(self.close)
+        
+        # Background mode checkbox
+        self.background_mode_check = QCheckBox("Background Typing Mode")
+        self.background_mode_check.setToolTip("When enabled, typing continues in the target window<br>even if you're working in other windows.")
+        
+        # Notepad mode checkbox
+        self.notepad_mode_check = QCheckBox("Notepad/Text Editor Mode")
+        self.notepad_mode_check.setToolTip("Enable this when typing into Notepad, Notepad++, or other text editors.<br>Uses special methods that work better with these applications.")
+        
+        # Progress bar with percentage label
+        progress_layout = QVBoxLayout()
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setFixedSize(80, 15)
+        self.progress_bar.setValue(0)
+        
+        self.progress_label = QLabel("0%")
+        self.progress_label.setAlignment(Qt.AlignCenter)
+        
+        progress_layout.addWidget(self.progress_bar)
+        progress_layout.addWidget(self.progress_label)
+        progress_layout.setAlignment(Qt.AlignCenter)
+        
+        # Status indicator
+        self.status_indicator = StatusIndicator(self)
+        
+        # Main content layout
+        content_layout = QHBoxLayout()
+        
+        # Text edit area with placeholder and autocorrect
+        self.text_edit = AutoCorrectTextEdit(self)
+        self.text_edit.setPlaceholderText("Enter text to type...\n\nTip: You can include emoji like 😊 👍 ⭐\n\nAutocorrect is enabled - common misspellings will be fixed as you type!")
+        
+        # Quick templates sidebar
+        self.templates_widget = QuickTemplate(self)
+        self.templates_widget.template_selected.connect(self.insert_template)
+        
+        content_layout.addWidget(self.text_edit, 3)
+        content_layout.addWidget(self.templates_widget, 1)
+        
+        # Add everything to main layout
+        self.main_layout.addWidget(self.eye_label)
+        
+        # Put buttons and checkbox in same row
+        controls_row = QHBoxLayout()
+        controls_row.addWidget(self.start_button)
+        
+        # Stack checkboxes vertically in a container
+        checkbox_layout = QVBoxLayout()
+        checkbox_layout.addWidget(self.background_mode_check)
+        checkbox_layout.addWidget(self.notepad_mode_check)
+        checkbox_container = QWidget()
+        checkbox_container.setLayout(checkbox_layout)
+        
+        controls_row.addWidget(checkbox_container)
+        controls_row.addWidget(self.close_button)
+        controls_row.addStretch()
+        controls_row.addLayout(progress_layout)
+        
+        self.main_layout.addLayout(controls_row)
+        self.main_layout.addWidget(self.status_indicator)
+        self.main_layout.addLayout(content_layout)
     
     def setup_menu(self):
         menubar = self.menuBar()
@@ -1045,74 +1513,7 @@ class TypingBot(QMainWindow):
             theme_cyberpunk.setChecked(True)
         else:
             theme_pink.setChecked(True)
-            
-    def setup_ui(self):
-        # Bot image with reference for animation
-        self.eye_label = QLabel()
-        self.eye_label.setAlignment(Qt.AlignCenter)
-        try:
-            pixmap = QPixmap("assets/eyes.png").scaled(175, 175, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            self.eye_label.setPixmap(pixmap)
-        except:
-            # Fallback if image is missing
-            self.eye_label.setText("👁️ 👁️")
-            self.eye_label.setStyleSheet("font-size: 64px;")
-        
-        # Control buttons with tooltips
-        button_layout = QHBoxLayout()
-        
-        self.start_button = QPushButton("▶️ Start Typing")
-        self.start_button.setFixedSize(140, 50)
-        self.start_button.setToolTip("Click to begin typing your text.<br>You'll have 4 seconds to focus on your target window.")
-        self.start_button.clicked.connect(self.start_typing)
-        
-        self.close_button = QPushButton("✖ Close")
-        self.close_button.setObjectName("closeButton")
-        self.close_button.setFixedSize(140, 50)
-        self.close_button.setFont(QFont("Segoe UI", 14, QFont.Bold))
-        self.close_button.clicked.connect(self.close)
-        
-        # Progress bar with percentage label
-        progress_layout = QVBoxLayout()
-        self.progress_bar = QProgressBar()
-        self.progress_bar.setFixedSize(80, 15)
-        self.progress_bar.setValue(0)
-        
-        self.progress_label = QLabel("0%")
-        self.progress_label.setAlignment(Qt.AlignCenter)
-        
-        progress_layout.addWidget(self.progress_bar)
-        progress_layout.addWidget(self.progress_label)
-        progress_layout.setAlignment(Qt.AlignCenter)
-        
-        # Status indicator
-        self.status_indicator = StatusIndicator(self)
-        
-        # Main content layout
-        content_layout = QHBoxLayout()
-        
-        # Text edit area with placeholder and autocorrect
-        self.text_edit = AutoCorrectTextEdit(self)
-        self.text_edit.setPlaceholderText("Enter text to type...\n\nTip: You can include emoji like 😊 👍 ⭐\n\nAutocorrect is enabled - common misspellings will be fixed as you type!")
-        
-        # Quick templates sidebar
-        self.templates_widget = QuickTemplate(self)
-        self.templates_widget.template_selected.connect(self.insert_template)
-        
-        content_layout.addWidget(self.text_edit, 3)
-        content_layout.addWidget(self.templates_widget, 1)
-        
-        # Add everything to main layout
-        self.main_layout.addWidget(self.eye_label)
-        button_layout.addWidget(self.start_button)
-        button_layout.addWidget(self.close_button)
-        button_layout.addStretch()
-        button_layout.addLayout(progress_layout)
-        
-        self.main_layout.addLayout(button_layout)
-        self.main_layout.addWidget(self.status_indicator)
-        self.main_layout.addLayout(content_layout)
-        
+    
     def insert_template(self, template_text):
         """Insert template text at cursor position"""
         self.text_edit.insertPlainText(template_text)
@@ -1181,7 +1582,20 @@ class TypingBot(QMainWindow):
         
         delay = self.typing_speed
         
-        self.show_popup("Ready", "Click into target window within 2 seconds.\nOnce started, typing will continue in that window even if you click elsewhere.")
+        # Check if special modes are enabled
+        background_mode = self.background_mode_check.isChecked()
+        notepad_mode = self.notepad_mode_check.isChecked()
+        
+        # Create instructions based on modes
+        if background_mode:
+            instructions = "Click into the target window within 2 seconds.\nYou can work in other windows while typing continues in the background."
+        else:
+            instructions = "Click into the target window within 2 seconds.\nThe typing will stay in that window even if you click elsewhere."
+            
+        if notepad_mode:
+            instructions += "\nNotepad/Text Editor Mode is enabled for better compatibility."
+            
+        self.show_popup("Ready", instructions)
         
         # Start typing in a separate thread
         if self.typing_thread and self.typing_thread.isRunning():
@@ -1191,7 +1605,9 @@ class TypingBot(QMainWindow):
         self.typing_thread = TypingThread(
             text, delay, self.error_rate, 
             self.punc_pause_prob, self.space_pause_prob, 
-            self.thinking_pause_prob
+            self.thinking_pause_prob,
+            background_mode,
+            notepad_mode
         )
         self.typing_thread.progress.connect(self.update_progress)
         self.typing_thread.finished.connect(self.typing_finished)
@@ -1201,7 +1617,14 @@ class TypingBot(QMainWindow):
     def handle_typing_error(self, error_msg):
         """Handle errors from typing thread"""
         print(f"Error: {error_msg}")
-        # Could show a status message but don't interrupt typing
+        
+        # Display critical errors as popups
+        if any(critical in error_msg for critical in 
+              ["Invalid target window", "Lost focus", "Failed to", "Aborting"]):
+            # Use QTimer to ensure this runs on the main thread
+            QTimer.singleShot(0, lambda: self.show_popup("Typing Error", error_msg, kind="warn"))
+        
+        # Let other errors just appear in the status message
     
     def typing_finished(self):
         self.progress_bar.setValue(0)
