@@ -12,9 +12,13 @@ from typing import Dict, List
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, 
                            QPushButton, QLabel, QSlider, QTextEdit, QFrame, QCheckBox,
                            QDialog, QMenu, QAction, QMenuBar, QProgressBar, QMessageBox, QToolTip,
-                           QGraphicsOpacityEffect)
+                           QGraphicsOpacityEffect, QListWidget, QInputDialog)
 from PyQt5.QtGui import QIcon, QFont, QPixmap, QColor, QPalette, QPainter, QTextCursor
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QTimer, QRect, QPoint, QPropertyAnimation, QEasingCurve
+
+# Import personality modules
+from bot_personality import BotPersonality
+from personality_dialog import PersonalityDialog
 
 pyautogui.PAUSE = 0  # Remove default pause between actions for max speed
 pyautogui.FAILSAFE = False  # Disable fail-safe for smoother operation
@@ -204,6 +208,7 @@ class WordMemory:
     def __init__(self, memory_file="word_memory.json"):
         self.memory_file = memory_file
         self.memory = self.load_memory()
+        self.lock = threading.Lock()  # Add lock for thread safety
         self.common_words = set([
           
             "the", "be", "to", "of", "and", "a", "in", "that", "have", "I", 
@@ -264,11 +269,12 @@ class WordMemory:
         # Apply time decay before saving
         self.apply_time_decay()
         
-        with open(self.memory_file, "w", encoding="utf-8") as f:
-            json.dump(self.memory, f, indent=2)
+        with self.lock:  # Acquire lock for thread safety
+            with open(self.memory_file, "w", encoding="utf-8") as f:
+                json.dump(self.memory, f, indent=2)
         
-        # Update last save time
-        self.last_save_time = time.time()
+            # Update last save time
+            self.last_save_time = time.time()
     
     def apply_time_decay(self):
         """Apply time decay to confidence scores based on last access."""
@@ -277,15 +283,16 @@ class WordMemory:
         
         # Only apply decay if at least a day has passed
         if days_since_save >= 1:
-            decay_factor = 1.0 - (self.decay_rate * days_since_save)
-            decay_factor = max(0.5, decay_factor)  # Never decay below 50%
-            
-            for word in self.memory:
-                if 'confidence' in self.memory[word]:
-                    self.memory[word]['confidence'] *= decay_factor
-                    # Update last_seen timestamp to maintain recency info
-                    if 'last_seen' in self.memory[word]:
-                        self.memory[word]['last_seen'] = current_time
+            with self.lock:  # Acquire lock for thread safety
+                decay_factor = 1.0 - (self.decay_rate * days_since_save)
+                decay_factor = max(0.5, decay_factor)  # Never decay below 50%
+                
+                for word in self.memory:
+                    if 'confidence' in self.memory[word]:
+                        self.memory[word]['confidence'] *= decay_factor
+                        # Update last_seen timestamp to maintain recency info
+                        if 'last_seen' in self.memory[word]:
+                            self.memory[word]['last_seen'] = current_time
     
     def calculate_difficulty(self, word):
         """Calculate typing difficulty score for a word (0.0-1.0)."""
@@ -322,38 +329,39 @@ class WordMemory:
         if not word or len(word) <= 1:
             return  # Skip very short words or empty strings
             
-        # Skip common words unless they're not in our memory yet
-        if word.lower() in self.common_words and word in self.memory:
-            if 'encounters' in self.memory[word]:
-                self.memory[word]['encounters'] += 1
-            return
-            
-        # Initialize new word
-        if word not in self.memory:
-            difficulty = self.calculate_difficulty(word)
-            self.memory[word] = {
-                'encounters': 1,
-                'difficulty': difficulty,
-                'confidence': max(0.2, 1.0 - difficulty),  # Start with inverse of difficulty, min 0.2
-                'last_seen': time.time(),
-                'first_seen': time.time()
-            }
-        else:
-            # Update existing word
-            self.memory[word]['encounters'] += 1
-            self.memory[word]['last_seen'] = time.time()
-            
-            # Increase confidence with diminishing returns
-            if self.memory[word]['encounters'] < 10:
-                confidence_gain = 0.1
-            elif self.memory[word]['encounters'] < 20:
-                confidence_gain = 0.05
-            else:
-                confidence_gain = 0.02
+        with self.lock:  # Acquire lock for thread safety
+            # Skip common words unless they're not in our memory yet
+            if word.lower() in self.common_words and word in self.memory:
+                if 'encounters' in self.memory[word]:
+                    self.memory[word]['encounters'] += 1
+                return
                 
-            # Apply confidence increase, capped at 0.95 for non-common words
-            new_confidence = self.memory[word]['confidence'] + confidence_gain
-            self.memory[word]['confidence'] = min(0.95, new_confidence)
+            # Initialize new word
+            if word not in self.memory:
+                difficulty = self.calculate_difficulty(word)
+                self.memory[word] = {
+                    'encounters': 1,
+                    'difficulty': difficulty,
+                    'confidence': max(0.2, 1.0 - difficulty),  # Start with inverse of difficulty, min 0.2
+                    'last_seen': time.time(),
+                    'first_seen': time.time()
+                }
+            else:
+                # Update existing word
+                self.memory[word]['encounters'] += 1
+                self.memory[word]['last_seen'] = time.time()
+                
+                # Increase confidence with diminishing returns
+                if self.memory[word]['encounters'] < 10:
+                    confidence_gain = 0.1
+                elif self.memory[word]['encounters'] < 20:
+                    confidence_gain = 0.05
+                else:
+                    confidence_gain = 0.02
+                    
+                # Apply confidence increase, capped at 0.95 for non-common words
+                new_confidence = self.memory[word]['confidence'] + confidence_gain
+                self.memory[word]['confidence'] = min(0.95, new_confidence)
     
     def update_text(self, text):
         """Process a text sample, updating memory for each word."""
@@ -377,44 +385,46 @@ class WordMemory:
                 'pause_time': 0.0     # Pause duration if pausing (seconds)
             }
             
-        # For common words, we're always confident
-        if word.lower() in self.common_words:
-            return {
-                'error_prob': 0.005,  # Very low error chance on common words
-                'pause_prob': 0.0,    # No pausing on common words
-                'pause_time': 0.0
-            }
+        with self.lock:  # Acquire lock for thread safety
+            # For common words, we're always confident
+            if word.lower() in self.common_words:
+                return {
+                    'error_prob': 0.005,  # Very low error chance on common words
+                    'pause_prob': 0.0,    # No pausing on common words
+                    'pause_time': 0.0
+                }
+                
+            # For words not in memory, use difficulty calculation
+            if word not in self.memory:
+                difficulty = self.calculate_difficulty(word)
+                return {
+                    'error_prob': min(0.15, difficulty * 0.2),
+                    'pause_prob': min(0.3, difficulty * 0.4),
+                    'pause_time': min(0.5, difficulty * 0.6)
+                }
+                
+            # Use stored confidence
+            confidence = self.memory[word].get('confidence', 0.5)
+            difficulty = self.memory[word].get('difficulty', 0.5)
             
-        # For words not in memory, use difficulty calculation
-        if word not in self.memory:
-            difficulty = self.calculate_difficulty(word)
-            return {
-                'error_prob': min(0.15, difficulty * 0.2),
-                'pause_prob': min(0.3, difficulty * 0.4),
-                'pause_time': min(0.5, difficulty * 0.6)
-            }
+            # Calculate error and pause probabilities inversely to confidence
+            error_prob = max(0.005, (1.0 - confidence) * 0.15)  # More confident = fewer errors
+            pause_prob = max(0.0, (1.0 - confidence) * 0.3)     # More confident = fewer pauses
+            pause_time = max(0.1, (1.0 - confidence) * 0.6)     # Longer pauses when less confident
             
-        # Use stored confidence
-        confidence = self.memory[word].get('confidence', 0.5)
-        difficulty = self.memory[word].get('difficulty', 0.5)
-        
-        # Calculate error and pause probabilities inversely to confidence
-        error_prob = max(0.005, (1.0 - confidence) * 0.15)  # More confident = fewer errors
-        pause_prob = max(0.0, (1.0 - confidence) * 0.3)     # More confident = fewer pauses
-        pause_time = max(0.1, (1.0 - confidence) * 0.6)     # Longer pauses when less confident
-        
-        return {
-            'error_prob': error_prob,
-            'pause_prob': pause_prob,
-            'pause_time': pause_time
-        }
+            return {
+                'error_prob': error_prob,
+                'pause_prob': pause_prob,
+                'pause_time': pause_time
+            }
     
     def get_words_by_confidence(self, threshold=0.5, limit=20):
         """Get words with confidence below a certain threshold."""
         result = []
-        for word, data in self.memory.items():
-            if 'confidence' in data and data['confidence'] < threshold:
-                result.append((word, data['confidence'], data.get('encounters', 0)))
+        with self.lock:  # Acquire lock for thread safety
+            for word, data in self.memory.items():
+                if 'confidence' in data and data['confidence'] < threshold:
+                    result.append((word, data['confidence'], data.get('encounters', 0)))
         
         # Sort by confidence (ascending)
         result.sort(key=lambda x: x[1])
@@ -422,29 +432,30 @@ class WordMemory:
     
     def get_stats(self):
         """Get statistics about the word memory."""
-        total_words = len(self.memory)
-        total_encounters = sum(data.get('encounters', 0) for data in self.memory.values())
-        
-        confidence_levels = {
-            'low': 0,      # 0.0-0.3
-            'medium': 0,   # 0.3-0.7
-            'high': 0,     # 0.7-1.0
-        }
-        
-        for data in self.memory.values():
-            if 'confidence' in data:
-                if data['confidence'] < 0.3:
-                    confidence_levels['low'] += 1
-                elif data['confidence'] < 0.7:
-                    confidence_levels['medium'] += 1
-                else:
-                    confidence_levels['high'] += 1
-        
-        return {
-            'total_words': total_words,
-            'total_encounters': total_encounters,
-            'confidence_levels': confidence_levels
-        }
+        with self.lock:  # Acquire lock for thread safety
+            total_words = len(self.memory)
+            total_encounters = sum(data.get('encounters', 0) for data in self.memory.values())
+            
+            confidence_levels = {
+                'low': 0,      # 0.0-0.3
+                'medium': 0,   # 0.3-0.7
+                'high': 0,     # 0.7-1.0
+            }
+            
+            for data in self.memory.values():
+                if 'confidence' in data:
+                    if data['confidence'] < 0.3:
+                        confidence_levels['low'] += 1
+                    elif data['confidence'] < 0.7:
+                        confidence_levels['medium'] += 1
+                    else:
+                        confidence_levels['high'] += 1
+            
+            return {
+                'total_words': total_words,
+                'total_encounters': total_encounters,
+                'confidence_levels': confidence_levels
+            }
 
 keyboard_neighbors = {
     'a': ['s', 'q', 'z'],        'b': ['v', 'g', 'h', 'n'],
@@ -895,7 +906,7 @@ class AutoCorrectTextEdit(QTextEdit):
         cursor_pos = cursor.position()
 
         # Add safety check for empty document or cursor at beginning
-        if cursor_pos <= 0 or not current_doc_text:
+        if cursor_pos <= 0 or not current_doc_text or cursor_pos > len(current_doc_text):
             return
 
         # The character just typed is at cursor_pos - 1
@@ -1285,10 +1296,139 @@ class TypingThread(QThread):
         self.running = True
         self.target_window = None
         self.word_memory = word_memory  # Instance of WordMemory class
+        self.silent_mode = False  # For multi-bot operation without UI signals
+        
+        # Personality-specific attributes
+        self.correction_style = "immediate"  # immediate, delayed, or none
+        self.emoji_handling = "direct"  # direct, pause, or confused
+        self.is_code_aware = False  # Better code indentation handling
+        self.uses_rhythm_variation = False  # Varies typing rhythm naturally
+        self.uses_double_space = False  # Double spaces after periods
+        self.common_misspellings = []  # List of (correct, misspelled) pairs
         
         # Update word memory with the text to be typed (gives bot a "preview")
         if self.word_memory:
             self.word_memory.update_text(text)
+    
+    def set_target_window(self, hwnd):
+        """Pre-set the target window instead of asking for click"""
+        self.target_window = hwnd
+    
+    def set_silent_mode(self, silent=True):
+        """Disables UI signals/prompts for headless operation"""
+        self.silent_mode = silent
+    
+    def type_for_timeslice(self, seconds):
+        """Type for a specific amount of time then yield control.
+        Used for round-robin focus management in multi-bot scenarios."""
+        # Store current position to resume later
+        if not hasattr(self, 'current_position'):
+            self.current_position = 0
+        
+        if not hasattr(self, 'typer') or not self.typer:
+            # Create typer if not already created
+            if hasattr(self, 'target_window') and self.target_window:
+                self.typer = DirectWindowTyper(self.target_window, self.background_mode, self.notepad_mode)
+            else:
+                return  # Can't type without a target window
+        
+        start_time = time.time()
+        chars_typed = 0
+        max_chars_per_slice = 30  # Don't type too many characters at once
+        
+        # Type until time is up or max chars reached
+        while (time.time() - start_time < seconds and 
+               chars_typed < max_chars_per_slice and 
+               self.current_position < len(self.text) and 
+               self.running):
+            
+            # Get the current character
+            ch = self.text[self.current_position]
+            
+            # Use the same typing logic as in run() but simplified
+            try:
+                # Get current word for context
+                current_word = self.extract_current_word(self.text, self.current_position)
+                if current_word:
+                    word_typing_params = self.get_word_specific_typing_params(current_word, self.error_rate)
+                else:
+                    word_typing_params = {'error_prob': self.error_rate, 'pause_prob': 0.0, 'pause_time': 0.0}
+                
+                # Handle simple newline case
+                if ch == '\n':
+                    self.typer.type_char('\n')
+                    time.sleep(self.delay)
+                    
+                    # Skip ahead to next character
+                    self.current_position += 1
+                    chars_typed += 1
+                    continue
+                
+                                    # Type the character with potential errors, influenced by personality
+                make_error = False
+                
+                # Apply personality-specific common misspellings
+                if self.common_misspellings and ch.isalnum():
+                    current_word = self.extract_current_word(self.text, self.current_position)
+                    if current_word:
+                        # Check if this word is in our common misspellings
+                        for correct, misspelled in self.common_misspellings:
+                            if current_word.lower() == correct.lower():
+                                # Higher chance of making an error
+                                if random.random() < word_typing_params.get('error_prob', self.error_rate) * 2:
+                                    make_error = True
+                                    break
+                
+                # Regular error probability if not a common misspelling
+                if not make_error and ch.isalnum() and random.random() < word_typing_params.get('error_prob', self.error_rate):
+                    make_error = True
+                
+                if make_error:
+                    # Simulate typo
+                    if (nb := keyboard_neighbors.get(ch, [])):
+                        typo = random.choice(nb)
+                        self.typer.type_char(typo)
+                        time.sleep(self.delay)
+                        
+                        # Apply correction style from personality
+                        if self.correction_style == "immediate":
+                            # Correct mistake immediately
+                            self.typer.type_char('\b')  # Backspace
+                            time.sleep(self.delay)
+                        elif self.correction_style == "delayed":
+                            # Sometimes notice mistakes later (continues typing then goes back)
+                            if random.random() < 0.7:  # 70% chance to correct
+                                self.typer.type_char('\b')  # Backspace
+                                time.sleep(self.delay)
+                            else:
+                                # Will be handled as missed correction (not corrected)
+                                pass
+                        elif self.correction_style == "none":
+                            # Don't correct errors (simulates very casual typing)
+                            pass
+                        else:
+                            # Default to immediate correction
+                            self.typer.type_char('\b')  # Backspace
+                            time.sleep(self.delay)
+                
+                # Type the actual character
+                if emoji.is_emoji(ch):
+                    self.typer.paste_text(ch)
+                else:
+                    self.typer.type_char(ch)
+                
+                time.sleep(self.delay)
+                
+                # Advance position
+                self.current_position += 1
+                chars_typed += 1
+                
+            except Exception as e:
+                print(f"Error in type_for_timeslice: {e}")
+                self.current_position += 1  # Skip problematic character
+        
+        # Return value indicates if there's more to type
+        return self.current_position < len(self.text)
     
     def extract_current_word(self, text, pos):
         """Extract the current word at position in text."""
@@ -1326,15 +1466,22 @@ class TypingThread(QThread):
     
     def run(self):
         try:
-            self.error.emit("👆 Click in the target window now...")
-            time.sleep(1)  # Brief pause
-            self.error.emit("⌨️ Get ready to type in 1 second...")
-            time.sleep(1)  # Second pause before starting
+            # Reset current position to start from the beginning
+            self.current_position = 0
             
-            # Get and store the active window handle
-            self.target_window = user32.GetForegroundWindow()
+            if not self.silent_mode:
+                self.error.emit("👆 Click in the target window now...")
+                time.sleep(1)  # Brief pause
+                self.error.emit("⌨️ Get ready to type in 1 second...")
+                time.sleep(1)  # Second pause before starting
+            
+            # If target window is not set, get the active window handle
+            if not self.target_window:
+                self.target_window = user32.GetForegroundWindow()
+                
             if not user32.IsWindow(self.target_window):
-                self.error.emit("❌ Invalid target window selected. Please try again.")
+                if not self.silent_mode:
+                    self.error.emit("❌ Invalid target window selected. Please try again.")
                 self.finished.emit()
                 return
                 
@@ -1347,40 +1494,43 @@ class TypingThread(QThread):
             # Create diagnostic label for background mode
             bg_status = "enabled" if self.background_mode else "disabled"
             notepad_status = "enabled" if self.notepad_mode else "disabled"
-            self.error.emit(f"✅ Typing into: {self.target_title} (Background: {bg_status}, Notepad: {notepad_status})")
-            self.error.emit("ℹ️ Special character normalization active (curly quotes → straight quotes, em dashes → hyphens, etc.)")
-            self.error.emit("🧠 Word-specific confidence scoring active (pauses and error rates adapt to word familiarity)")
+            if not self.silent_mode:
+                self.error.emit(f"✅ Typing into: {self.target_title} (Background: {bg_status}, Notepad: {notepad_status})")
+                self.error.emit("ℹ️ Special character normalization active (curly quotes → straight quotes, em dashes → hyphens, etc.)")
+                self.error.emit("🧠 Word-specific confidence scoring active (pauses and error rates adapt to word familiarity)")
             
             # Create direct typer
-            typer = DirectWindowTyper(self.target_window, self.background_mode, self.notepad_mode)
+            self.typer = DirectWindowTyper(self.target_window, self.background_mode, self.notepad_mode)
             
             # First ensure window has focus before we start
-            if not typer.ensure_window_focus():
-                self.error.emit(f"Could not focus target window: {self.target_title}")
+            if not self.typer.ensure_window_focus():
+                if not self.silent_mode:
+                    self.error.emit(f"Could not focus target window: {self.target_title}")
                 self.finished.emit()
                 return
                 
             # Test typing with each method to identify what works with this window type
-            self.error.emit("🧪 Testing typing methods...")
+            if not self.silent_mode:
+                self.error.emit("🧪 Testing typing methods...")
             
             # Try the direct send method
-            direct_send_works = typer.try_direct_message("", "send")  # Try empty char to test without typing
+            direct_send_works = self.typer.try_direct_message("", "send")  # Try empty char to test without typing
             
             # Try the direct post method
-            direct_post_works = typer.try_direct_message("", "post")  # Try empty char to test without typing
+            direct_post_works = self.typer.try_direct_message("", "post")  # Try empty char to test without typing
             
             # PyAutoGUI always works when window has focus
             pyautogui_works = True
             
             # Log the results
-            self.error.emit(f"Compatible methods: DirectSend={direct_send_works}, DirectPost={direct_post_works}, PyAutoGUI={pyautogui_works}")
+            if not self.silent_mode:
+                self.error.emit(f"Compatible methods: DirectSend={direct_send_works}, DirectPost={direct_post_works}, PyAutoGUI={pyautogui_works}")
             
             # If we're in background mode but direct messaging won't work, warn the user
-            if self.background_mode and not (direct_send_works or direct_post_works):
+            if self.background_mode and not (direct_send_works or direct_post_works) and not self.silent_mode:
                 self.error.emit("⚠️ Background mode may not work with this window type. Falling back to foreground typing.")
             
             total = len(self.text)
-            i = 0
             current_line_indent = ''
             current_word = ""
             word_typing_params = {}
@@ -1391,7 +1541,14 @@ class TypingThread(QThread):
             last_focus_check = time.time()
             words_typed = set()  # Track words we've fully typed
             
-            while i < total and self.running:
+            # If we're handling typing in time slices through the focus manager, we can skip the main typing loop
+            if hasattr(self, 'current_position') and self.current_position > 0:
+                # We're being managed by the focus manager, so just finish up
+                self.progress.emit(100)
+                self.finished.emit()
+                return
+            
+            while self.current_position < total and self.running:
                 try:
                     # Rate limiting - no more than 30 chars per second regardless of delay setting
                     char_count += 1
@@ -1404,24 +1561,27 @@ class TypingThread(QThread):
                         
                     # Check window is still valid periodically
                     if not user32.IsWindow(self.target_window):
-                        self.error.emit("Target window closed or became invalid during typing.")
+                        if not self.silent_mode:
+                            self.error.emit("Target window closed or became invalid during typing.")
                         break # Exit the loop
                     
                     # Check focus every 1 second to make sure we haven't lost it
                     now = time.time()
                     if now - last_focus_check > 1.0:
-                        if not typer.ensure_window_focus():
-                            self.error.emit("Lost focus on target window. Trying to refocus...")
-                            if not typer.ensure_window_focus():  # Try one more time
-                                self.error.emit("Could not refocus target window. Aborting.")
+                        if not self.typer.ensure_window_focus():
+                            if not self.silent_mode:
+                                self.error.emit("Lost focus on target window. Trying to refocus...")
+                            if not self.typer.ensure_window_focus():  # Try one more time
+                                if not self.silent_mode:
+                                    self.error.emit("Could not refocus target window. Aborting.")
                                 break
                         last_focus_check = now
 
-                    ch = self.text[i]
+                    ch = self.text[self.current_position]
                     
                     # Update current word and word-specific typing parameters when on a word boundary
-                    if i == 0 or not self.text[i-1].isalnum():
-                        current_word = self.extract_current_word(self.text, i)
+                    if self.current_position == 0 or not self.text[self.current_position-1].isalnum():
+                        current_word = self.extract_current_word(self.text, self.current_position)
                         if current_word:
                             word_typing_params = self.get_word_specific_typing_params(current_word, self.error_rate)
                         else:
@@ -1429,11 +1589,11 @@ class TypingThread(QThread):
                     
                     # autotab logic
                     if ch == '\n':
-                        prev_newline = self.text.rfind('\n', 0, i)
+                        prev_newline = self.text.rfind('\n', 0, self.current_position)
                         if prev_newline == -1:
-                            prev_line = self.text[:i]
+                            prev_line = self.text[:self.current_position]
                         else:
-                            prev_line = self.text[prev_newline+1:i]
+                            prev_line = self.text[prev_newline+1:self.current_position]
                         
                         leading_ws = ''
                         for c in prev_line:
@@ -1447,24 +1607,27 @@ class TypingThread(QThread):
                             current_line_indent += '    '
                         
                         # Type newline
-                        if not typer.type_char('\n'):
-                            self.error.emit("Failed to type newline. Window may have lost focus.")
+                        if not self.typer.type_char('\n'):
+                            if not self.silent_mode:
+                                self.error.emit("Failed to type newline. Window may have lost focus.")
                             continue
                         time.sleep(self.delay)
                         
                         # Add indentation if needed
                         if current_line_indent:
-                            success = typer.type_string_failsafe(current_line_indent, self.delay)
+                            success = self.typer.type_string_failsafe(current_line_indent, self.delay)
                             if not success:
-                                self.error.emit("Warning: Failed to type indentation. Trying alternative method...")
+                                if not self.silent_mode:
+                                    self.error.emit("Warning: Failed to type indentation. Trying alternative method...")
                                 # Try character by character as fallback
                                 for indent_char in current_line_indent:
-                                    if not typer.type_char(indent_char):
-                                        self.error.emit("Failed to type indentation character.")
+                                    if not self.typer.type_char(indent_char):
+                                        if not self.silent_mode:
+                                            self.error.emit("Failed to type indentation character.")
                                     time.sleep(self.delay)
                         
-                        i += 1
-                        self.progress.emit(int((i / total) * 100))
+                        self.current_position += 1
+                        self.progress.emit(int((self.current_position / total) * 100))
                         continue
 
                     # Word-specific typo probability instead of global error rate
@@ -1474,22 +1637,27 @@ class TypingThread(QThread):
                         if (nb := keyboard_neighbors.get(ch, [])):
                             make_typo = True
                             typo = random.choice(nb)
-                            if not typer.type_char(typo):
-                                self.error.emit("Failed to type typo character. Checking window focus...")
-                                if not typer.ensure_window_focus():
-                                    self.error.emit("Lost focus and could not refocus. Aborting.")
+                            if not self.typer.type_char(typo):
+                                if not self.silent_mode:
+                                    self.error.emit("Failed to type typo character. Checking window focus...")
+                                if not self.typer.ensure_window_focus():
+                                    if not self.silent_mode:
+                                        self.error.emit("Lost focus and could not refocus. Aborting.")
                                     break
                             time.sleep(self.delay)
-                            if not typer.type_char('\b'):  # backspace
-                                self.error.emit("Failed to type backspace. Checking window focus...")
-                                if not typer.ensure_window_focus():
-                                    self.error.emit("Lost focus and could not refocus. Aborting.")
+                            if not self.typer.type_char('\b'):  # backspace
+                                if not self.silent_mode:
+                                    self.error.emit("Failed to type backspace. Checking window focus...")
+                                if not self.typer.ensure_window_focus():
+                                    if not self.silent_mode:
+                                        self.error.emit("Lost focus and could not refocus. Aborting.")
                                     break
                             time.sleep(self.delay)
                     
                     # Word-specific pausing before typing a difficult word
                     if current_word and current_word not in words_typed and random.random() < word_typing_params.get('pause_prob', 0.0):
-                        self.error.emit(f"Pausing at '{current_word}': {word_typing_params.get('pause_time', 0.2):.1f}s")
+                        if not self.silent_mode:
+                            self.error.emit(f"Pausing at '{current_word}': {word_typing_params.get('pause_time', 0.2):.1f}s")
                         time.sleep(word_typing_params.get('pause_time', 0.2))
                         words_typed.add(current_word)
                         
@@ -1499,63 +1667,104 @@ class TypingThread(QThread):
                             # If the word was typed correctly (no typo), emit signal
                             if not make_typo and current_word in self.word_memory.memory:
                                 confidence = self.word_memory.memory[current_word].get('confidence', 0.0)
-                                self.word_learned.emit(current_word, confidence)
+                                if not self.silent_mode:
+                                    self.word_learned.emit(current_word, confidence)
                     
-                    # type or emoji-paste
+                    # type or emoji-paste with personality-specific handling
                     if emoji.is_emoji(ch):
+                        # Apply emoji handling style from personality
+                        if self.emoji_handling == "pause":
+                            # Pause briefly before emoji (as if considering)
+                            time.sleep(random.uniform(0.2, 0.5))
+                        elif self.emoji_handling == "confused":
+                            # Act confused by emoji, pause longer, and maybe retry
+                            time.sleep(random.uniform(0.5, 1.0))
+                            if random.random() < 0.3:  # 30% chance to "retry"
+                                # Type a space then delete it (simulating confusion)
+                                self.typer.type_char(' ')
+                                time.sleep(0.2)
+                                self.typer.type_char('\b')  # Backspace
+                                time.sleep(0.3)
+                        
                         # Emoji needs special handling - use paste
-                        if not typer.paste_text(ch):
-                            self.error.emit("Failed to paste emoji. Checking window focus...")
-                            if not typer.ensure_window_focus():
-                                self.error.emit("Lost focus and could not refocus. Aborting.")
+                        if not self.typer.paste_text(ch):
+                            if not self.silent_mode:
+                                self.error.emit("Failed to paste emoji. Checking window focus...")
+                            if not self.typer.ensure_window_focus():
+                                if not self.silent_mode:
+                                    self.error.emit("Lost focus and could not refocus. Aborting.")
                                 break
                     else:
-                        if not typer.type_char(ch):
-                            self.error.emit("Failed to type character. Checking window focus...")
-                            if not typer.ensure_window_focus():
-                                self.error.emit("Lost focus and could not refocus. Aborting.")
+                        if not self.typer.type_char(ch):
+                            if not self.silent_mode:
+                                self.error.emit("Failed to type character. Checking window focus...")
+                            if not self.typer.ensure_window_focus():
+                                if not self.silent_mode:
+                                    self.error.emit("Lost focus and could not refocus. Aborting.")
                                 break
-                        time.sleep(self.delay)
+                                                    # Add rhythm variation if personality uses it
+                            actual_delay = self.delay
+                            if self.uses_rhythm_variation:
+                                # Vary the delay slightly for more natural rhythm
+                                actual_delay = self.delay * random.uniform(0.8, 1.2)
+                            time.sleep(actual_delay)
 
                     # punctuation pause
                     if ch in ".!?," and random.random() < self.punc_pause_prob:
-                        time.sleep(random.uniform(0.1, 0.25))
+                        # Longer pause if personality is a careful typist
+                        if self.correction_style == "immediate":
+                            time.sleep(random.uniform(0.1, 0.3))
+                        else:
+                            time.sleep(random.uniform(0.1, 0.25))
+                        
+                        # Add double space after period if personality does that
+                        if ch == '.' and self.uses_double_space and random.random() < 0.8:  # 80% chance
+                            self.typer.type_char(" ")
+                            time.sleep(self.delay * 0.5)  # Shorter delay for second space
                         
                     # space pause
                     if ch == " " and random.random() < self.space_pause_prob:
                         time.sleep(random.uniform(0.07, 0.18))
                         
-                    # thinking pause
+                    # thinking pause with personality adjustment
                     if random.random() < self.thinking_pause_prob:
-                        time.sleep(random.uniform(0.7, 1.5))
+                        # More variation for natural typists
+                        if self.uses_rhythm_variation:
+                            time.sleep(random.uniform(0.5, 1.8))
+                        else:
+                            time.sleep(random.uniform(0.7, 1.5))
                     
-                    i += 1
-                    self.progress.emit(int((i / total) * 100))
+                    self.current_position += 1
+                    self.progress.emit(int((self.current_position / total) * 100))
                     
                 except Exception as e:
-                    self.error.emit(f"Error during typing: {e}")
+                    if not self.silent_mode:
+                        self.error.emit(f"Error during typing: {e}")
                     # Continue with next character
-                    i += 1
+                    self.current_position += 1
                     continue
             
-            self.progress.emit(0)
+            self.progress.emit(100 if self.current_position >= total else 0)
             
             # Save the word memory at the end of typing
             if self.word_memory:
                 self.word_memory.save_memory()
                 stats = self.word_memory.get_stats()
-                self.error.emit(f"Memory stats: {stats['total_words']} words, {stats['total_encounters']} total encounters")
+                if not self.silent_mode:
+                    self.error.emit(f"Memory stats: {stats['total_words']} words, {stats['total_encounters']} total encounters")
             
             self.finished.emit()
             
             # At the end of typing, show diagnostics if there were any issues
-            diagnostic_info = typer.get_diagnostic_info()
-            self.error.emit(f"Typing complete. Methods used: {diagnostic_info}")
+            if not self.silent_mode:
+                diagnostic_info = self.typer.get_diagnostic_info()
+                self.error.emit(f"Typing complete. Methods used: {diagnostic_info}")
             
         except Exception as e:
-            self.error.emit(f"Critical error in typing thread: {e}")
+            if not self.silent_mode:
+                self.error.emit(f"Critical error in typing thread: {e}")
             self.finished.emit()
-        
+    
     def stop(self):
         self.running = False
 
@@ -1568,13 +1777,19 @@ class QuickTemplate(QFrame):
         super().__init__(parent)
         self.setFrameShape(QFrame.StyledPanel)
         
-        # Templates (these can be saved/loaded from a file)
-        self.templates = [
+        # Templates file
+        self.templates_file = "templates.json"
+        
+        # Templates (load from file if exists, otherwise use defaults)
+        self.default_templates = [
             "Hello! How can I help you today?",
             "Thank you for your message. I'll get back to you as soon as possible.",
             "Best regards,\nEyetype4You",
             "This is a test template with emoji 😊👍✨"
         ]
+        
+        # Load templates (combines defaults with saved custom templates)
+        self.templates = self.load_templates()
         
         # Layout
         layout = QVBoxLayout(self)
@@ -1586,7 +1801,27 @@ class QuickTemplate(QFrame):
         title_label.setStyleSheet("font-weight: bold;")
         layout.addWidget(title_label)
         
-        # Template buttons
+        # Template buttons (use separate method to allow refreshing)
+        self.buttons_layout = QVBoxLayout()
+        layout.addLayout(self.buttons_layout)
+        self.refresh_template_buttons()
+        
+        # Add button
+        add_btn = QPushButton("➕ Add New")
+        add_btn.setObjectName("templateButton")
+        add_btn.clicked.connect(self.add_template)
+        layout.addWidget(add_btn)
+    
+    def refresh_template_buttons(self):
+        """Clear and recreate template buttons"""
+        # First, clear existing buttons
+        while self.buttons_layout.count():
+            item = self.buttons_layout.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
+        
+        # Create buttons for each template
         for i, template in enumerate(self.templates):
             # Show first 40 chars
             short_text = template[:40] + ("..." if len(template) > 40 else "")
@@ -1595,19 +1830,83 @@ class QuickTemplate(QFrame):
             btn.clicked.connect(lambda _, t=template: self.template_selected.emit(t))
             # Help tooltip showing full template
             btn.setToolTip(template.replace("\n", "<br>"))
-            layout.addWidget(btn)
-        
-        # Add button
-        add_btn = QPushButton("➕ Add New")
-        add_btn.setObjectName("templateButton")
-        add_btn.clicked.connect(self.add_template)
-        layout.addWidget(add_btn)
+            self.buttons_layout.addWidget(btn)
+    
+    def load_templates(self):
+        """Load templates from file, merging with defaults"""
+        try:
+            with open(self.templates_file, "r", encoding="utf-8") as f:
+                custom_templates = json.load(f)
+                # Combine default and custom templates
+                return self.default_templates + custom_templates
+        except (FileNotFoundError, json.JSONDecodeError):
+            # If file doesn't exist or is invalid, use defaults
+            return self.default_templates.copy()
+    
+    def save_templates(self):
+        """Save custom templates to file"""
+        # Only save non-default templates
+        custom_templates = self.templates[len(self.default_templates):]
+        try:
+            with open(self.templates_file, "w", encoding="utf-8") as f:
+                json.dump(custom_templates, f, indent=2, ensure_ascii=False)
+            return True
+        except Exception as e:
+            print(f"Error saving templates: {e}")
+            return False
     
     def add_template(self):
-        # This would save to the templates list
-        # For now just show a dialog saying feature coming soon
-        QMessageBox.information(self, "Coming Soon", 
-                              "Custom templates will be available in the next update!")
+        """Add a new custom template"""
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Add Custom Template")
+        dialog.setMinimumWidth(400)
+        
+        layout = QVBoxLayout(dialog)
+        
+        # Instructions
+        instructions = QLabel("Enter your custom template text:")
+        layout.addWidget(instructions)
+        
+        # Template text editor
+        template_edit = QTextEdit()
+        template_edit.setMinimumHeight(150)
+        template_edit.setPlaceholderText("Type your template here...")
+        layout.addWidget(template_edit)
+        
+        # Note about emoji
+        emoji_note = QLabel("💡 Tip: You can include emoji!")
+        layout.addWidget(emoji_note)
+        
+        # Buttons
+        button_layout = QHBoxLayout()
+        cancel_btn = QPushButton("Cancel")
+        cancel_btn.clicked.connect(dialog.reject)
+        
+        save_btn = QPushButton("Save Template")
+        save_btn.clicked.connect(lambda: self._save_new_template(template_edit.toPlainText(), dialog))
+        
+        button_layout.addWidget(cancel_btn)
+        button_layout.addWidget(save_btn)
+        layout.addLayout(button_layout)
+        
+        dialog.exec_()
+    
+    def _save_new_template(self, template_text, dialog):
+        """Save a new template from dialog input"""
+        if not template_text.strip():
+            QMessageBox.warning(dialog, "Empty Template", "Please enter some text for your template.")
+            return
+        
+        # Add template to list
+        self.templates.append(template_text)
+        
+        # Save to file
+        if self.save_templates():
+            # Refresh template buttons
+            self.refresh_template_buttons()
+            dialog.accept()
+        else:
+            QMessageBox.warning(dialog, "Save Error", "Failed to save your template. Please try again.")
 
 class StatusIndicator(QFrame):
     """Widget showing current settings status"""
@@ -1639,6 +1938,10 @@ class StatusIndicator(QFrame):
         self.notepad_mode_label = QLabel()
         self.notepad_mode_label.setObjectName("statusLabel")
         
+        # Personality indicator
+        self.personality_label = QLabel()
+        self.personality_label.setObjectName("statusLabel")
+        
         layout.addWidget(self.speed_label)
         layout.addStretch()
         layout.addWidget(self.error_label)
@@ -1648,6 +1951,8 @@ class StatusIndicator(QFrame):
         layout.addWidget(self.bg_mode_label)
         layout.addStretch()
         layout.addWidget(self.notepad_mode_label)
+        layout.addStretch()
+        layout.addWidget(self.personality_label)
         
         # Connect to checkbox changes
         if hasattr(parent, 'background_mode_check'):
@@ -1680,6 +1985,10 @@ class StatusIndicator(QFrame):
         if hasattr(self.parent, 'notepad_mode_check'):
             notepad_mode = "Enabled" if self.parent.notepad_mode_check.isChecked() else "Disabled"
             self.notepad_mode_label.setText(f"📝 Notepad: {notepad_mode}")
+            
+        # Update personality
+        if hasattr(self.parent, 'current_personality'):
+            self.personality_label.setText(f"🧠 Personality: {self.parent.current_personality.name}")
 
 class SplashScreen(QDialog):
     """A reliable splash screen shown at application startup"""
@@ -1770,6 +2079,7 @@ class TypingBot(QMainWindow):
         self.space_pause_prob = 0.08
         self.thinking_pause_prob = 0.025
         self.theme = 'cyberpunk'  # Default theme
+        self.current_personality = BotPersonality("natural_typist")  # Default personality
         self.typing_thread = None
         self.typing_speed = 0.12  # Default typing speed in seconds
         
@@ -1782,6 +2092,9 @@ class TypingBot(QMainWindow):
         self.setup_menu()
         self.setup_ui()
         
+        # Initialize bot manager
+        self.setup_multi_bot()
+        
         # Apply theme
         self.apply_theme()
         
@@ -1792,6 +2105,66 @@ class TypingBot(QMainWindow):
         # Load memory stats and log
         stats = self.word_memory.get_stats()
         print(f"Loaded word memory: {stats['total_words']} words")
+    
+    def setup_multi_bot(self):
+        """Initialize the bot manager and add multi-bot menu items"""
+        # Create bot manager
+        self.bot_manager = BotManager(max_concurrent=3)
+        
+        # Add multi-bot menu
+        multi_menu = self.menuBar().addMenu("🤖 Multi-Bot")
+        
+        # Add actions
+        manage_action = QAction("Manage Bots", self)
+        manage_action.triggered.connect(self.show_bot_manager)
+        multi_menu.addAction(manage_action)
+        
+        # Add shortcuts
+        duplicate_action = QAction("Add Bot with Current Settings", self)
+        duplicate_action.triggered.connect(self.duplicate_current)
+        multi_menu.addAction(duplicate_action)
+    
+    def show_bot_manager(self):
+        """Show the multi-bot manager dialog"""
+        dialog = MultiBotDialog(self, self.bot_manager)
+        dialog.exec_()
+    
+    def duplicate_current(self):
+        """Create a new bot with current settings"""
+        text = self.text_edit.toPlainText()
+        if not text.strip():
+            QMessageBox.warning(self, "No Text", "Please enter text to type.")
+            return
+            
+        settings = {
+            'delay': self.typing_speed,
+            'error_rate': self.error_rate,
+            'punc_pause_prob': self.punc_pause_prob,
+            'space_pause_prob': self.space_pause_prob,
+            'thinking_pause_prob': self.thinking_pause_prob,
+            'background_mode': True,  # Always true for multi-bot
+            'notepad_mode': self.notepad_mode_check.isChecked(),
+            'word_memory': self.word_memory,
+            # Add personality parameters
+            'personality_id': self.current_personality.id,
+            'personality_name': self.current_personality.name,
+            'correction_style': self.current_personality.correction_style,
+            'emoji_handling': self.current_personality.emoji_handling,
+            'is_code_aware': self.current_personality.is_code_aware,
+            'uses_rhythm_variation': self.current_personality.uses_rhythm_variation,
+            'common_misspellings': self.current_personality.common_misspellings
+        }
+        
+        # Get a name for the bot
+        name, ok = QInputDialog.getText(self, "Bot Name", "Enter a name for this bot:")
+        if not ok:
+            return
+            
+        # Add the bot task
+        self.bot_manager.add_bot_task(text, settings, name)
+        
+        # Show confirmation
+        QMessageBox.information(self, "Bot Added", f"Bot added to the queue.\nUse 'Manage Bots' to view status.")
     
     def setup_menu(self):
         menubar = self.menuBar()
@@ -1883,6 +2256,11 @@ class TypingBot(QMainWindow):
             theme_cyberpunk.setChecked(True)
         else:
             theme_pink.setChecked(True)
+            
+        # Add personality menu item
+        personality_action = QAction("🤖 Bot Personalities", self)
+        personality_action.triggered.connect(self.show_personality_dialog)
+        settings_menu.addAction(personality_action)
             
         # Add word memory menu
         self.add_word_memory_menu()
@@ -2200,12 +2578,18 @@ class TypingBot(QMainWindow):
         if notepad_mode:
             instructions += "\nNotepad/Text Editor Mode is enabled for better compatibility."
             
+        # Include personality info in instructions
+        instructions += f"\n\nUsing '{self.current_personality.name}' personality."
+            
         self.show_popup("Ready", instructions)
         
         # Start typing in a separate thread
         if self.typing_thread and self.typing_thread.isRunning():
             self.typing_thread.stop()
             self.typing_thread.wait()
+        
+        # Get additional personality parameters
+        params = self.current_personality.get_typing_parameters()
         
         self.typing_thread = TypingThread(
             text, delay, self.error_rate, 
@@ -2215,6 +2599,19 @@ class TypingBot(QMainWindow):
             notepad_mode,
             word_memory=self.word_memory  # Pass WordMemory instance to thread
         )
+        
+        # Set additional personality attributes if the typing thread supports them
+        if hasattr(self.typing_thread, 'correction_style'):
+            self.typing_thread.correction_style = params.get('correction_style', 'immediate')
+        if hasattr(self.typing_thread, 'emoji_handling'):
+            self.typing_thread.emoji_handling = params.get('emoji_handling', 'direct')
+        if hasattr(self.typing_thread, 'is_code_aware'):
+            self.typing_thread.is_code_aware = params.get('is_code_aware', False)
+        if hasattr(self.typing_thread, 'uses_rhythm_variation'):
+            self.typing_thread.uses_rhythm_variation = params.get('uses_rhythm_variation', False)
+        if hasattr(self.typing_thread, 'common_misspellings'):
+            self.typing_thread.common_misspellings = params.get('common_misspellings', [])
+        
         self.typing_thread.progress.connect(self.update_progress)
         self.typing_thread.finished.connect(self.typing_finished)
         self.typing_thread.error.connect(self.handle_typing_error)
@@ -2255,6 +2652,37 @@ class TypingBot(QMainWindow):
         """Toggle autocorrect functionality"""
         if hasattr(self, 'text_edit') and isinstance(self.text_edit, AutoCorrectTextEdit):
             self.text_edit.toggle_autocorrect(checked)
+    
+    def show_personality_dialog(self):
+        """Show the personality selection dialog"""
+        # Get the current personality ID
+        current_id = self.current_personality.id
+        
+        # Create and show the dialog
+        dialog = PersonalityDialog(self, current_id)
+        dialog.personality_selected.connect(self.apply_personality)
+        dialog.exec_()
+    
+    def apply_personality(self, personality_id):
+        """Apply a selected personality to the bot"""
+        # Load the personality
+        self.current_personality = BotPersonality(personality_id)
+        
+        # Update typing parameters based on personality
+        params = self.current_personality.get_typing_parameters()
+        self.typing_speed = params["delay"]
+        self.error_rate = params["error_rate"]
+        self.punc_pause_prob = params["punc_pause_prob"]
+        self.space_pause_prob = params["space_pause_prob"]
+        self.thinking_pause_prob = params["thinking_pause_prob"]
+        
+        # Update status indicator
+        if hasattr(self, 'status_indicator'):
+            self.status_indicator.update_status()
+            
+        # Show confirmation to user
+        self.show_popup("Personality Applied", 
+                      f"Now using: {self.current_personality.name}\n{self.current_personality.description}")
     
     def open_error_dialog(self):
         """Open a dialog to set custom error rate"""
@@ -2443,6 +2871,476 @@ class SettingsDialog(QDialog):
         self.dark_mode = checked
         self.parent.dark_mode = checked
         self.parent.apply_theme()
+
+class BotManager:
+    """Manages multiple typing bots for concurrent operation"""
+    
+    def __init__(self, max_concurrent=3):
+        self.max_concurrent = max_concurrent
+        self.active_bots = {}  # Dict of task_id: TypingThread
+        self.bot_queue = []  # List of (task_id, text, settings) tuples
+        self.pending_count = 0
+        self.completed_count = 0
+        self.status_change_callbacks = []  # For UI updates
+        self.focus_manager_running = False
+        self.focus_manager_thread = None
+        self.bot_errors = {}  # Dict of task_id: list of error messages
+        self.bot_progress = {}  # Dict of task_id: progress percentage
+    
+    def add_bot_task(self, text, settings, name=None):
+        """Add a typing task to the queue"""
+        task_id = f"bot_{len(self.bot_queue) + len(self.active_bots) + 1}"
+        if name:
+            task_id = name
+        self.bot_queue.append((task_id, text, settings))
+        self.pending_count += 1
+        self._process_queue()
+        return task_id
+    
+    def add_status_callback(self, callback):
+        """Add a callback function to be called when status changes"""
+        self.status_change_callbacks.append(callback)
+    
+    def _notify_status_change(self):
+        """Notify all callbacks of status change"""
+        for callback in self.status_change_callbacks:
+            callback()
+    
+    def _process_queue(self):
+        """Start new bots if slots are available"""
+        while len(self.active_bots) < self.max_concurrent and self.bot_queue:
+            task_id, text, settings = self.bot_queue.pop(0)
+            # Create a new typing thread with settings
+            thread = TypingThread(
+                text=text,
+                delay=settings.get('delay', 0.12),
+                error_rate=settings.get('error_rate', 1/83),
+                punc_pause_prob=settings.get('punc_pause_prob', 0.18),
+                space_pause_prob=settings.get('space_pause_prob', 0.08),
+                thinking_pause_prob=settings.get('thinking_pause_prob', 0.025),
+                background_mode=settings.get('background_mode', True),  # Always use background mode for multi-bot
+                notepad_mode=settings.get('notepad_mode', False),
+                word_memory=settings.get('word_memory', None)
+            )
+            
+            # Set personality attributes if available
+            if 'correction_style' in settings:
+                if hasattr(thread, 'correction_style'):
+                    thread.correction_style = settings.get('correction_style')
+            if 'emoji_handling' in settings:
+                if hasattr(thread, 'emoji_handling'):
+                    thread.emoji_handling = settings.get('emoji_handling')
+            if 'is_code_aware' in settings:
+                if hasattr(thread, 'is_code_aware'):
+                    thread.is_code_aware = settings.get('is_code_aware')
+            if 'uses_rhythm_variation' in settings:
+                if hasattr(thread, 'uses_rhythm_variation'):
+                    thread.uses_rhythm_variation = settings.get('uses_rhythm_variation')
+            if 'common_misspellings' in settings:
+                if hasattr(thread, 'common_misspellings'):
+                    thread.common_misspellings = settings.get('common_misspellings')
+                    
+            # Set to silent mode for multi-bot
+            thread.set_silent_mode(True)
+            
+            # Setup error tracking
+            self.bot_errors[task_id] = []
+            self.bot_progress[task_id] = 0
+            
+            # Connect signals with unique task_id lambda capture
+            thread.finished.connect(lambda tid=task_id: self._bot_finished(tid))
+            thread.error.connect(lambda msg, tid=task_id: self._bot_error(tid, msg))
+            thread.progress.connect(lambda prog, tid=task_id: self._bot_progress(tid, prog))
+            
+            # Store and start
+            self.active_bots[task_id] = thread
+            thread.start()
+            
+            self._notify_status_change()
+            
+            # Start focus manager if not already running
+            self._ensure_focus_manager()
+    
+    def _bot_progress(self, task_id, progress):
+        """Update progress for a specific bot"""
+        self.bot_progress[task_id] = progress
+        self._notify_status_change()
+    
+    def _bot_error(self, task_id, error_msg):
+        """Handle bot errors"""
+        print(f"Bot {task_id} error: {error_msg}")
+        # Store the error message
+        if task_id in self.bot_errors:
+            self.bot_errors[task_id].append(error_msg)
+            # Keep only last 5 errors
+            if len(self.bot_errors[task_id]) > 5:
+                self.bot_errors[task_id] = self.bot_errors[task_id][-5:]
+        self._notify_status_change()
+    
+    def _bot_finished(self, task_id):
+        """Handle bot completion"""
+        if task_id in self.active_bots:
+            thread = self.active_bots.pop(task_id)
+            # Clean up thread
+            thread.wait()
+            self.completed_count += 1
+            # Process next in queue
+            self._process_queue()
+            self._notify_status_change()
+    
+    def _ensure_focus_manager(self):
+        """Start the focus manager thread if not already running"""
+        if len(self.active_bots) > 1 and not self.focus_manager_running:
+            self.focus_manager_running = True
+            self.focus_manager_thread = threading.Thread(target=self._focus_manager_loop)
+            self.focus_manager_thread.daemon = True
+            self.focus_manager_thread.start()
+    
+    def _focus_manager_loop(self):
+        """Loop that manages focus for multiple bots"""
+        try:
+            while self.focus_manager_running and len(self.active_bots) > 0:
+                self._manage_focus_for_bots()
+                time.sleep(0.5)  # Check focus every half second
+        except Exception as e:
+            print(f"Error in focus manager: {e}")
+        finally:
+            self.focus_manager_running = False
+    
+    def _manage_focus_for_bots(self):
+        """Handle window focus for multiple bots"""
+        # Group bots by target window
+        window_groups = {}
+        for bot_id, bot in list(self.active_bots.items()):
+            if not hasattr(bot, 'target_window') or not bot.target_window:
+                continue
+                
+            # Skip bots in background mode
+            if bot.background_mode:
+                continue
+                
+            if bot.target_window not in window_groups:
+                window_groups[bot.target_window] = []
+                
+            window_groups[bot.target_window].append(bot_id)
+        
+        # If only one window or all bots are in background mode, no need for focus management
+        if len(window_groups) <= 1:
+            return
+            
+        # Round-robin focus between windows
+        for window, bot_ids in window_groups.items():
+            if not user32.IsWindow(window):
+                continue
+                
+            # Set focus to this window
+            user32.SetForegroundWindow(window)
+            time.sleep(0.2)  # Allow OS to register focus change
+            
+            # Give each bot in this window a chance to type
+            for bot_id in bot_ids:
+                if bot_id in self.active_bots:
+                    bot = self.active_bots[bot_id]
+                    # Let the bot type for a short time slice
+                    if hasattr(bot, 'type_for_timeslice'):
+                        bot.type_for_timeslice(0.3)  # Type for 0.3 seconds
+    
+    def stop_bot(self, task_id):
+        """Stop a specific bot"""
+        if task_id in self.active_bots:
+            thread = self.active_bots[task_id]
+            thread.stop()
+            thread.wait()
+            self.active_bots.pop(task_id)
+            self._notify_status_change()
+            # Process queue in case there are pending bots
+            self._process_queue()
+            return True
+        return False
+    
+    def stop_all(self):
+        """Stop all active bots"""
+        # Stop focus manager
+        self.focus_manager_running = False
+        if self.focus_manager_thread:
+            self.focus_manager_thread.join(1.0)  # Wait up to 1 second
+            self.focus_manager_thread = None
+            
+        # Stop all bots
+        for task_id, thread in list(self.active_bots.items()):
+            thread.stop()
+            thread.wait()
+        self.active_bots.clear()
+        self.bot_queue.clear()
+        self._notify_status_change()
+    
+    def get_status(self):
+        """Get status of all bots"""
+        return {
+            'active': len(self.active_bots),
+            'pending': len(self.bot_queue),
+            'completed': self.completed_count,
+            'active_bots': {id: 'Running' for id in self.active_bots.keys()},
+            'progress': self.bot_progress,
+            'errors': self.bot_errors
+        }
+
+class MultiBotDialog(QDialog):
+    """Dialog for managing multiple bots"""
+    
+    def __init__(self, parent=None, bot_manager=None):
+        super().__init__(parent)
+        self.parent = parent
+        self.bot_manager = bot_manager
+        self.setWindowTitle("Multi-Bot Manager")
+        self.setFixedSize(600, 500)  # Increased size for details
+        
+        self.setup_ui()
+        
+        # Update timer
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_status)
+        self.timer.start(1000)  # Update every second
+    
+    def setup_ui(self):
+        layout = QVBoxLayout(self)
+        
+        # Bot status
+        status_layout = QHBoxLayout()
+        
+        # Stats
+        self.stats_label = QLabel("Active: 0 | Pending: 0 | Completed: 0")
+        status_layout.addWidget(self.stats_label)
+        
+        layout.addLayout(status_layout)
+        
+        # Split the main area into list and details
+        list_details_layout = QHBoxLayout()
+        
+        # Bot list panel (left)
+        list_panel = QVBoxLayout()
+        list_panel.addWidget(QLabel("Active Bots:"))
+        self.bot_list = QListWidget()
+        self.bot_list.currentItemChanged.connect(self.bot_selected)
+        list_panel.addWidget(self.bot_list)
+        list_details_layout.addLayout(list_panel, 1)
+        
+        # Bot details panel (right)
+        details_panel = QVBoxLayout()
+        details_panel.addWidget(QLabel("Bot Details:"))
+        self.bot_details = QTextEdit()
+        self.bot_details.setReadOnly(True)
+        details_panel.addWidget(self.bot_details)
+        list_details_layout.addLayout(details_panel, 1)
+        
+        layout.addLayout(list_details_layout)
+        
+        # Controls
+        controls_layout = QHBoxLayout()
+        
+        self.add_btn = QPushButton("Add Bot")
+        self.add_btn.clicked.connect(self.add_bot)
+        controls_layout.addWidget(self.add_btn)
+        
+        self.select_window_btn = QPushButton("Select Target Window")
+        self.select_window_btn.clicked.connect(self.select_target_window)
+        controls_layout.addWidget(self.select_window_btn)
+        
+        self.stop_btn = QPushButton("Stop Selected")
+        self.stop_btn.clicked.connect(self.stop_selected)
+        controls_layout.addWidget(self.stop_btn)
+        
+        self.stop_all_btn = QPushButton("Stop All")
+        self.stop_all_btn.clicked.connect(self.stop_all)
+        controls_layout.addWidget(self.stop_all_btn)
+        
+        layout.addLayout(controls_layout)
+        
+        # Store last selected window handle
+        self.selected_window_handle = None
+        self.selected_window_title = "No window selected"
+        
+        # Window selection status
+        self.window_label = QLabel(f"Target Window: {self.selected_window_title}")
+        layout.addWidget(self.window_label)
+        
+        self.update_status()
+    
+    def bot_selected(self):
+        """Update details when a bot is selected"""
+        if not self.bot_list.currentItem():
+            self.bot_details.setText("")
+            return
+            
+        # Get selected bot ID from item text (format: "ID: Status (Progress%)")
+        selected_text = self.bot_list.currentItem().text()
+        bot_id = selected_text.split(":")[0].strip()
+        
+        # Get status info
+        status = self.bot_manager.get_status()
+        
+        # Prepare details text
+        details = f"Bot: {bot_id}\n"
+        details += f"Status: {'Running' if bot_id in self.bot_manager.active_bots else 'Completed'}\n"
+        
+        # Add progress if available
+        if bot_id in status['progress']:
+            progress = status['progress'][bot_id]
+            details += f"Progress: {progress}%\n"
+        
+        # Add error log if available
+        if bot_id in status['errors'] and status['errors'][bot_id]:
+            details += "\nLast errors:\n"
+            for error in status['errors'][bot_id]:
+                details += f"- {error}\n"
+                
+        self.bot_details.setText(details)
+    
+    def select_target_window(self):
+        """Let the user select a target window for bots"""
+        # Show instructions to user
+        QMessageBox.information(self, "Select Window", 
+                             "Click OK, then click on the window where you want the bot to type.\n"
+                             "You have 5 seconds to select a window.")
+        
+        # Hide this dialog temporarily
+        self.hide()
+        
+        # Brief delay before starting to track
+        time.sleep(0.5)
+        
+        # Timer for window selection
+        start_time = time.time()
+        while time.time() - start_time < 5.0:  # 5 seconds to select window
+            time.sleep(0.1)  # Small delay to prevent CPU spike
+            
+            # Get current foreground window
+            hwnd = user32.GetForegroundWindow()
+            
+            # Don't select our own app windows
+            if hwnd and hwnd != self.winId() and (not self.parent or hwnd != self.parent.winId()):
+                # Get window title
+                title_len = user32.GetWindowTextLengthW(hwnd)
+                if title_len > 0:
+                    buff = ctypes.create_unicode_buffer(title_len + 1)
+                    user32.GetWindowTextW(hwnd, buff, title_len + 1)
+                    window_title = buff.value
+                    
+                    # Store the selected window
+                    self.selected_window_handle = hwnd
+                    self.selected_window_title = window_title
+                    
+                    # Update window label
+                    self.window_label.setText(f"Target Window: {self.selected_window_title}")
+                    
+                    # Show dialog again
+                    self.show()
+                    
+                    QMessageBox.information(self, "Window Selected", 
+                                         f"Selected window: {window_title}\n\n"
+                                         f"New bots will target this window.")
+                    return
+        
+        # Show dialog again if no selection was made
+        self.show()
+        QMessageBox.warning(self, "No Window Selected", 
+                          "No window was selected in time.\n"
+                          "Bots will ask for a window click when started.")
+    
+    def add_bot(self):
+        """Add a new bot with current settings from parent"""
+        if not self.parent:
+            return
+            
+        # Get a name for the bot
+        name, ok = QInputDialog.getText(self, "Bot Name", "Enter a name for this bot:")
+        if not ok or not name:
+            name = None
+            
+        # Get settings from parent TypingBot
+        settings = {
+            'delay': self.parent.typing_speed,
+            'error_rate': self.parent.error_rate,
+            'punc_pause_prob': self.parent.punc_pause_prob,
+            'space_pause_prob': self.parent.space_pause_prob,
+            'thinking_pause_prob': self.parent.thinking_pause_prob,
+            'background_mode': True,  # Always use background mode for multi-bot
+            'notepad_mode': self.parent.notepad_mode_check.isChecked(),
+            'word_memory': self.parent.word_memory
+        }
+        
+        # Get text from parent's text edit
+        text = self.parent.text_edit.toPlainText()
+        if not text.strip():
+            QMessageBox.warning(self, "No Text", "Please enter text to type in the main window.")
+            return
+            
+        # Add to manager
+        task_id = self.bot_manager.add_bot_task(text, settings, name)
+        self.update_status()
+        
+        # Set target window if one is selected
+        if self.selected_window_handle and task_id in self.bot_manager.active_bots:
+            bot_thread = self.bot_manager.active_bots[task_id]
+            if hasattr(bot_thread, 'set_target_window'):
+                bot_thread.set_target_window(self.selected_window_handle)
+                QMessageBox.information(self, "Bot Started", 
+                                     f"Bot '{task_id}' started and targeting window: {self.selected_window_title}")
+    
+    def stop_selected(self):
+        """Stop the selected bot"""
+        if not self.bot_list.currentItem():
+            return
+            
+        # Get the selected bot ID from the item text (format: "ID: Status")
+        selected_text = self.bot_list.currentItem().text()
+        bot_id = selected_text.split(":")[0].strip()
+        
+        self.bot_manager.stop_bot(bot_id)
+        self.update_status()
+    
+    def stop_all(self):
+        """Stop all bots"""
+        self.bot_manager.stop_all()
+        self.update_status()
+    
+    def update_status(self):
+        """Update the status display"""
+        status = self.bot_manager.get_status()
+        
+        # Update stats
+        self.stats_label.setText(
+            f"Active: {status['active']} | "
+            f"Pending: {len(self.bot_manager.bot_queue)} | "
+            f"Completed: {status['completed']}"
+        )
+        
+        # Save currently selected item text
+        current_selection = None
+        if self.bot_list.currentItem():
+            current_selection = self.bot_list.currentItem().text().split(":")[0].strip()
+        
+        # Update bot list
+        self.bot_list.clear()
+        for bot_id, state in status['active_bots'].items():
+            # Add progress if available
+            progress_text = ""
+            if bot_id in status['progress']:
+                progress = status['progress'][bot_id]
+                progress_text = f" ({progress}%)"
+                
+            self.bot_list.addItem(f"{bot_id}: {state}{progress_text}")
+        
+        # Try to reselect the previously selected bot
+        if current_selection:
+            for i in range(self.bot_list.count()):
+                item_text = self.bot_list.item(i).text()
+                if item_text.startswith(f"{current_selection}:"):
+                    self.bot_list.setCurrentRow(i)
+                    break
+        
+        # Update the details view if a bot is selected
+        self.bot_selected()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
