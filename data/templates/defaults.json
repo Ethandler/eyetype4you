@@ -1,0 +1,13 @@
+{
+  "Professional Email": "Dear [Name],\n\nI hope this email finds you well. [Message]\n\nBest regards,\n[Your Name]",
+  
+  "Meeting Minutes": "Meeting: [Title]\nDate: [Date]\nAttendees: [Names]\n\nAgenda:\n1. \n2. \n3. \n\nKey Points:\n- \n- \n\nAction Items:\n- [ ] \n- [ ] \n\nNext Meeting: [Date/Time]",
+  
+  "Code Comment Block": "/**\n * @function: [Name]\n * @description: [Description]\n * @param: [Parameters]\n * @returns: [Return Value]\n */",
+  
+  "Bug Report": "Bug Description: [Description]\nSteps to Reproduce:\n1. \n2. \n3. \nExpected Behavior: \nActual Behavior: \nSystem Info: \nAdditional Notes: ",
+  
+  "Quick Reply": "Hi [Name],\n\nThanks for your message. [Response]\n\nCheers,\n[Your Name]",
+  
+  "Daily Update": "Daily Update - [Date]\n\nCompleted:\n- \n\nIn Progress:\n- \n\nBlocking Issues:\n- \n\nNext Steps:\n- "
+}

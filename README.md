@@ -1,12 +1,12 @@
-# 👁️‍��️ Eyetype4You Bot
+# ️‍🗨️ Eyetype4You Bot
 
-**Eyetype4You** is a premium AI-powered typing automation tool that simulates incredibly human-like typing—perfect for demonstrations, testing, or any situation where you need text entered naturally.
+**Eyetype4You** is a premium AI-powered typing automation tool that simulates incredibly human-like typing—perfect for demonstrations, testing, or any situation where you need text entered naturally.*
 
 ## ✨ Key Features
 
 - **🤖 Human-like Typing**: Simulates natural typing with realistic pauses, occasional typos and corrections
 - **😎 Emoji Support**: Automatically handles emoji insertion seamlessly
-- **🎨 Beautiful Themes**: 
+- **🎨 Beautiful Themes**:
   - **Cyberpunk (Dark City)**: Deep blacks with neon blue accents for a futuristic feel
   - **Pink City (Light)**: Soft pinks and whites for a modern, bright experience
 - **⚙️ Fully Customizable**:
@@ -22,7 +22,7 @@
 
 Unlike other autotypers, Eyetype4You doesn't just dump text. It recreates the **authentic human typing experience** with:
 
-- Strategic pauses after punctuation 
+- Strategic pauses after punctuation
 - Natural hesitations between words
 - Smart handling of code indentation
 - Occasional typos with immediate corrections
@@ -55,13 +55,14 @@ Unlike other autotypers, Eyetype4You doesn't just dump text. It recreates the **
 ## 🧠 Smart Typing Memory
 
 Eyetype4You includes a sophisticated word memory system that:
+
 - Learns from words you type frequently
 - Adjusts confidence levels based on typing frequency
 - Reduces errors on familiar words
 - Applies natural decay to memory over time
 - Works across multiple bots with thread-safe access
 
-## 🔮 Coming Soon...
+## 🔮 Coming Soon
 
 - **Multiple Bot Personalities**: Different typing styles with unique error patterns
 - **Bot Costumes**: Customize your bot's appearance with various character options
@@ -85,48 +86,59 @@ This software is licensed, not sold. Unauthorized distribution is prohibited.
 ### 1. Build the EXE (with PyInstaller)
 
 Make sure you have all dependencies installed:
-```
-pip install -r requirements.txt
+
+```sh
+# ...existing code...
 ```
 
 Then run:
-```
+
+```sh
 pyinstaller --onefile --windowed --icon assets/eyes.ico --add-data "assets;assets" main.py
 ```
+
 - This will bundle the assets folder and use your icon from `assets/eyes.ico`.
 - The output EXE will be in the `dist/` folder.
 
 If you want to include other files (like `word_memory.json`):
-```
+
+```sh
 pyinstaller --onefile --windowed --icon assets/eyes.ico --add-data "assets;assets" --add-data "word_memory.json;." main.py
 ```
 
 ### 2. Test the EXE
+
 - Run `dist/main.exe` and make sure all features and images work.
 
 ### 3. Build the Installer (Inno Setup)
+
 - Open `Eyetype4YouInstaller.iss` in Inno Setup Compiler.
 - Make sure the `[Files]` section includes:
-  ```
-  Source: "dist\main.exe"; DestDir: "{app}"
-  Source: "assets\*"; DestDir: "{app}\assets"; Flags: recursesubdirs
-  Source: "word_memory.json"; DestDir: "{app}"
-  ```
+
+```ini
+Source: "dist\main.exe"; DestDir: "{app}"
+Source: "assets\*"; DestDir: "{app}\assets"; Flags: recursesubdirs
+Source: "word_memory.json"; DestDir: "{app}"
+```
+
 - Set the icon for the installer and shortcut:
-  ```
-  [Icons]
-  Name: "{group}\Eyetype4You"; Filename: "{app}\main.exe"; IconFilename: "{app}\assets\eyes.ico"
-  ```
+
+```ini
+[Icons]
+Name: "{group}\Eyetype4You"; Filename: "{app}\main.exe"; IconFilename: "{app}\assets\eyes.ico"
+```
+
 - Compile the installer.
 
 ---
 
 ## Notes
+
 - If you add new assets, update the `--add-data` argument.
 - If you change the EXE name, update the installer script accordingly.
 - For advanced PyInstaller options, consider using a `.spec` file.
 
-# EyeType4You - User Guide
+## EyeType4You - User Guide
 
 ## Introduction
 
@@ -197,6 +209,7 @@ EyeType4You uses personality profiles to create more natural typing patterns.
 4. Click "Select This Personality" to apply it
 
 Each personality affects:
+
 - Typing speed
 - Error frequency
 - Pause patterns
@@ -215,6 +228,7 @@ Each personality affects:
 ### Managing Custom Personalities
 
 Use the "Manage Custom" tab to:
+
 - View your custom personalities
 - Delete unwanted personalities
 - Edit existing personalities (in future updates)
@@ -234,6 +248,7 @@ EyeType4You supports running multiple typing bots simultaneously.
 ### Bot Management
 
 In the Multi-Bot Manager:
+
 - View all active bots and their progress
 - Stop individual bots with "Stop Selected"
 - Stop all bots with "Stop All"
@@ -253,6 +268,7 @@ Access from: **Word Memory Menu**
 - **Reset Memory**: Clear all word learning data (use with caution)
 
 Words typed frequently become more "familiar" to the bot, resulting in:
+
 - Fewer typing errors
 - More confident typing (fewer pauses)
 - More natural rhythm variations

@@ -1,75 +1,29 @@
-# setup.py
-import sys
-from cx_Freeze import setup, Executable
+"""
+Setup script for EyeType4You package.
 
-# 1) Files & packages to include in the frozen EXE
-build_exe_options = {
-    "packages": [
-        "tkinter",
-        "PIL",
-        "pyautogui",
-        "emoji",
-        "pyperclip",
-    ],
-    "include_files": [
-        # your bot’s assets
-        ("assets/eyes.png", "assets/eyes.png"),
-        # emoji lookup table
-        ("emoji_annotations.json", "emoji_annotations.json"),
-        # initial memory file (will be mutated at runtime)
-        ("word_memory.json", "word_memory.json"),
-    ],
-}
+This script handles the installation and packaging of the EyeType4You application.
+It defines package metadata, dependencies, and entry points for command-line
+and GUI execution.
+"""
+from setuptools import setup, find_packages
 
-# 2) MSI‐specific options: create Desktop & Start Menu shortcuts
-bdist_msi_options = {
-    "data": {
-        "Shortcut": [
-            (
-                "DesktopShortcut",       # internal shortcut name
-                "DesktopFolder",         # location
-                "Eyetype4You",           # shortcut name
-                "TARGETDIR",             # component
-                "[TARGETDIR]\\Eyetype4You.exe",  # target executable
-                None, None, None, None, None, None
-            ),
-            (
-                "StartMenuShortcut",
-                "StartMenuFolder",
-                "Eyetype4You",
-                "TARGETDIR",
-                "[TARGETDIR]\\Eyetype4You.exe",
-                None, None, None, None, None, None
-            ),
-        ]
-    }
-}
+# Read requirements from requirements.txt
+with open('requirements.txt', 'r', encoding='utf-8') as f:
+    requirements = [line.strip() for line in f if line.strip() and not line.startswith('#')]
 
-# 3) Use a GUI‐only base on Windows to suppress the console window
-base = "Win32GUI" if sys.platform == "win32" else None
-
-# 4) Define the executable
-executables = [
-    Executable(
-        script="main.py",
-        base=base,
-        icon="assets/eyes.ico",    # your multi‐size .ico
-        target_name="Eyetype4You.exe"
-    )
-]
-
-# 5) Finally, call setup() with both EXE and MSI options
 setup(
-    name="Eyetype4You",
-    version="1.0",
-    description="Human-like typing bot with emoji support",
-    options={
-        "build_exe": build_exe_options,
-        "bdist_msi": bdist_msi_options,
+    name="eyetype4you",
+    package_dir={"": "src"},
+    packages=find_packages(where="src"),
+    include_package_data=True,
+    install_requires=requirements,
+    entry_points={
+        "console_scripts": [
+            "eyetype4you=eyetype4you.main:main",
+        ],
+        "gui_scripts": [
+            "eyetype4you-gui=eyetype4you.main:main",
+        ],
     },
-    executables=executables
+    python_requires=">=3.8",
 )
-# Note: To build the EXE, run this script with Python. The output will be in the 'build' directory.
-# To create an MSI installer, run the command: python setup.py bdist_msi
-# Note: Ensure you have cx_Freeze installed. You can install it using pip: pip install cx_Freeze
-# Note: The above code is a simplified version of the setup.py file. You may need to adjust paths and options based on your project structure.

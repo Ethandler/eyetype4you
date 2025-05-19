@@ -1,0 +1,12 @@
+# MANIFEST.in for EyeType4You
+# This file specifies non-Python files to include in the package distribution
+
+# Include license and requirements
+include LICENSE.md
+include LICENSE.txt
+include requirements.txt
+
+# Include all files in these directories
+recursive-include data *
+recursive-include assets *
+recursive-include docs *.md
