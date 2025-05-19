@@ -1,4 +1,5 @@
 import sys
+import os
 import json
 import time
 import random
@@ -10,9 +11,9 @@ import ctypes
 from typing import Dict, List
 # Testing file edit
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, 
-                           QPushButton, QLabel, QSlider, QTextEdit, QFrame, QCheckBox,
-                           QDialog, QMenu, QAction, QMenuBar, QProgressBar, QMessageBox, QToolTip,
-                           QGraphicsOpacityEffect, QListWidget, QInputDialog)
+                QPushButton, QLabel, QSlider, QTextEdit, QFrame, QCheckBox,
+                QDialog, QMenu, QAction, QMenuBar, QProgressBar, QMessageBox, QToolTip,
+                QGraphicsOpacityEffect, QListWidget, QInputDialog)
 from PyQt5.QtGui import QIcon, QFont, QPixmap, QColor, QPalette, QPainter, QTextCursor
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QTimer, QRect, QPoint, QPropertyAnimation, QEasingCurve
 
@@ -1552,7 +1553,7 @@ class TypingThread(QThread):
                 try:
                     # Rate limiting - no more than 30 chars per second regardless of delay setting
                     char_count += 1
-                    if char_count > 30:
+                    if (char_count > 30):
                         now = time.time()
                         if now - last_reset < 1.0:
                             time.sleep(1.0 - (now - last_reset))
@@ -1701,8 +1702,7 @@ class TypingThread(QThread):
                             if not self.typer.ensure_window_focus():
                                 if not self.silent_mode:
                                     self.error.emit("Lost focus and could not refocus. Aborting.")
-                                break
-                                                    # Add rhythm variation if personality uses it
+                                break                                                    # Add rhythm variation if personality uses it
                             actual_delay = self.delay
                             if self.uses_rhythm_variation:
                                 # Vary the delay slightly for more natural rhythm
