@@ -1,8 +1,22 @@
 # EyeType4You Developer Guide
 
-## Project Structure
-
+```plaintext
+eyetype4you/
+├── src/
+│   └── eyetype4you/
+│       ├── bot/            # Bot personality and configuration
+│       ├── core/           # Core typing engine and word memory
+│       ├── ui/             # Qt-based user interface
+│       ├── utils/          # Utilities like emoji handling
+│       └── multibot/       # Multi-bot management
+├── assets/                 # Icons and resources
+├── data/                   # Configuration and templates
+├── docs/                   # Documentation
+├── tests/                  # Unit and integration tests
+├── scripts/               # Build and utility scripts
+└── installer/             # Installer configuration
 ```
+
 eyetype4you/
 ├── src/
 │   └── eyetype4you/
@@ -17,11 +31,11 @@ eyetype4you/
 ├── tests/                  # Unit and integration tests
 ├── scripts/                # Build and utility scripts
 └── installer/              # Installer configuration
-```
 
 ## Development Setup
 
 1. Create a virtual environment:
+
    ```bash
    python -m venv venv
    source venv/bin/activate  # Linux/Mac
@@ -29,6 +43,7 @@ eyetype4you/
    ```
 
 2. Install development dependencies:
+
    ```bash
    pip install -e ".[dev]"
    ```
@@ -36,21 +51,25 @@ eyetype4you/
 ## Key Components
 
 ### TypingEngine
+
 - Handles core typing simulation
 - Manages typing speed and patterns
 - Integrates with word memory system
 
 ### BotPersonality
+
 - Defines typing characteristics
 - Controls error rates and timing
 - Customizable through UI
 
 ### WordMemory
+
 - Learns from typing patterns
 - Adapts confidence levels
 - Thread-safe for multi-bot use
 
 ### MultiBotManager
+
 - Coordinates multiple typing instances
 - Manages bot lifecycles
 - Handles resource allocation
@@ -58,16 +77,19 @@ eyetype4you/
 ## Building and Testing
 
 ### Running Tests
+
 ```bash
 pytest
 ```
 
 ### Building the Executable
+
 ```bash
 python scripts/build_exe.py
 ```
 
 ### Creating the Installer
+
 1. Install Inno Setup
 2. Open `installer/setup.iss`
 3. Click Compile
@@ -90,11 +112,13 @@ python scripts/build_exe.py
 ## Thread Safety
 
 The application uses multiple threads for:
+
 - UI responsiveness
 - Concurrent typing bots
 - Word memory updates
 
 Ensure thread safety when:
+
 - Accessing shared resources
 - Modifying word memory
 - Managing bot states

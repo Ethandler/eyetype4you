@@ -1,13 +1,15 @@
-# EyeType4You User Guide
+# EyeType4You - User Guide
 
 ## Getting Started
 
 1. **Installation**
+
    - Run the EyeType4You installer
    - Follow the setup wizard
    - Launch from desktop icon or start menu
 
 2. **Main Interface**
+
    - Text editor for input
    - Speed control slider
    - Error rate adjustment
@@ -30,18 +32,21 @@
 ## Advanced Features
 
 ### Bot Personalities
+
 - Create custom typing styles
 - Adjust error rates
 - Set pause patterns
 - Save favorites
 
 ### Multi-Bot Mode
+
 1. Open Multi-Bot Manager
 2. Create multiple bots
 3. Assign different texts
 4. Control individually
 
 ### Word Memory
+
 - Learns from usage
 - Adapts typing speed
 - Improves accuracy
@@ -57,16 +62,20 @@
 ## Troubleshooting
 
 ### Common Issues
+
 1. **Text not typing**
+
    - Check window focus
    - Verify permissions
    - Restart application
 
 2. **Emoji not working**
+
    - Check system compatibility
    - Update clipboard access
 
 3. **Performance issues**
+
    - Reduce active bots
    - Clear word memory
    - Check system resources
@@ -74,6 +83,7 @@
 ### Support
 
 For additional help:
+
 - Check FAQ section
 - Contact support
 - Visit forum
